@@ -1,4 +1,4 @@
- # Olá eu sou o Paulo!
+ # Olá, eu sou o Paulo!
 
 <div align="center">
   <a href="https://github.com/yasminconc">
