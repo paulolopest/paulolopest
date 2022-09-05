@@ -1,13 +1,11 @@
 import * as jwt from "jsonwebtoken"
 import { AuthenticationData } from "../models/AuthenticationData"
 
-const secreKey = process.env.SECRET_KEY as string
-
 export class Authenticator {
     generateToken = (id: AuthenticationData): string => {
         return jwt.sign (
             id,
-            secreKey,
+            "r2d2c3po",
             {expiresIn: "5h"}
     )}
 

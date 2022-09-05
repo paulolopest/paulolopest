@@ -21,6 +21,7 @@ export class PaymentBusiness {
 
         const userId = authenticator.getTokenData(token)
         const id = idGenerator.generateId()
+        
         let today = new Date()
 
         const isInvalid = await verifyDate(cardValidation)

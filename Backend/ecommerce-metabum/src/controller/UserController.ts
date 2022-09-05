@@ -1,11 +1,14 @@
 import { Request, Response } from "express"
-import { userBusiness } from "../models/Classes"
+import { UserBusiness } from "../business/UserBusiness"
 
 export class UserController {
+    constructor(
+        private userBussines: UserBusiness
+    ) {}
     signup = async(req: Request, res: Response) => {
         try {
             const {name, email, cpf, password} = req.body
-            const response = await userBusiness.signup(name, email, cpf, password)
+            const response = await this.userBussines.signup(name, email, cpf, password)
 
             res.status(201).send(response)
         } catch (error:any) {
@@ -16,7 +19,7 @@ export class UserController {
     login = async(req: Request, res: Response) => {
         try {
             const {email, password} = req.body
-            const response = await userBusiness.login(email, password)
+            const response = await this.userBussines.login(email, password)
 
 
             res.status(200).send(response)
@@ -28,7 +31,7 @@ export class UserController {
     getProfile = async(req:Request, res: Response) => {
         try {
             const token = req.headers.authorization as string
-            const response = await userBusiness.getProfile(token)
+            const response = await this.userBussines.getProfile(token)
 
             res.send(response)
         } catch (error:any) {
@@ -41,7 +44,7 @@ export class UserController {
             const token = req.headers.authorization as string
             const {name} = req.body
 
-            const response  = await userBusiness.editProfileName(token, name)
+            const response  = await this.userBussines.editProfileName(token, name)
 
             res.send(`Name successfully update for ${name}`)
         } catch (error:any) {
@@ -52,8 +55,9 @@ export class UserController {
     deleteUser = async(req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string
-            const response = await userBusiness.deleteUser(token)
+            const response = await this.userBussines.deleteUser(token)
 
+            console.log(response)
             res.send("User deleted")
         } catch (error:any) {
             res.status(500).send(error.message || error.sqlMessage)

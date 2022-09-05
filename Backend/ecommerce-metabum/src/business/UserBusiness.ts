@@ -1,6 +1,17 @@
-import { authenticator, hashManager, idGenerator, userData } from "../models/Classes"
+import { UserData } from "../data/UserData"
+import { User } from "../models/User"
+import { Authenticator } from "../services/Authenticator"
+import { HashManager } from "../services/HashManager"
+import { IdGenerator } from "../services/IdGenerator"
 
 export class UserBusiness {
+    constructor (
+        private authenticator: Authenticator,
+        private hashManager: HashManager,
+        private idGenerator: IdGenerator,
+        private userData: UserData,
+    ) {}
+
     signup = async(name: string, email: string, cpf: string, password: string) => {
         if(!name) {
             throw new Error("Enter a name")
@@ -11,7 +22,7 @@ export class UserBusiness {
             throw new Error("The email must contain an @")
         }
 
-        const user = await userData.getUserByEmail(email)
+        const user = await this.userData.getUserByEmail(email)
         if(user) {
             throw new Error("User already exist")
         }
@@ -19,39 +30,37 @@ export class UserBusiness {
         if(!cpf) {
             throw new Error("Enter a CPF")
         }
-        const cpfVerify = await userData.getUserByCpf(cpf)
+
+        if(cpf.length != 11) {
+            throw new Error("The CPF must be equal 11 characters")
+        }
+
+        const cpfVerify = await this.userData.getUserByCpf(cpf)
         if(cpfVerify) {
             throw new Error("The cpf is already registered")
         }
-
-        if(cpf.length != 11) {
-            throw new Error("The CPF must be longer than 11 characters")
-        }
+        
         if(!password) {
             throw new Error("Enter a password")
         } else if (password.length < 6) {
             throw new Error("The password must be longer than 6 characteres")
         }
 
-        const id: string = idGenerator.generateId()
-        const cypherPassword = await hashManager.generateHash(password)
+        const id: string = this.idGenerator.generateId()
+        const cypherPassword = await this.hashManager.generateHash(password)
 
-        await userData.signup({
-            id: id,
-            name: name,
-            email: email,
-            cpf: cpf,
-            password: cypherPassword
-        })
+        await this.userData.signup(
+            new User(id, name, email, cypherPassword, cpf)
+        )
 
-        const token = authenticator.generateToken({id: id})
+        const token = this.authenticator.generateToken({id: id})
 
         return token
     }
 
     login = async(email: string, password: string) => {
         if(!email) {
-            throw new Error("Enter a email")
+            throw new Error("Enter an email")
         }
         if(!password) {
             throw new Error("Invalid password")
@@ -59,28 +68,28 @@ export class UserBusiness {
             throw new Error("Invalid password")
         }
 
-        const user = await userData.getUserByEmail(email)
+        const user = await this.userData.getUserByEmail(email)
         if(!user) {
             throw new Error("Account does not exist")
         }
 
-        const validatePassword = await hashManager.compareHash(password, user.password)
+        const validatePassword = await this.hashManager.compareHash(password, user.password)
         if(!validatePassword) {
             throw new Error("Incorrect password")
         }
 
-        const token = authenticator.generateToken({id: user.id})
+        const token = this.authenticator.generateToken({id: user.id})
 
         return token
     }
 
-    getProfile = async(token: string) => {
+    getProfile = async(token: string): Promise<string[]> => {
         if(!token) {
             throw new Error("Login first")
         }
-        const userId = authenticator.getTokenData(token)
+        const userId = this.authenticator.getTokenData(token)
 
-        const response = await userData.getProfile(userId.id)
+        const response = await this.userData.getProfile(userId.id)
 
         return response
     }
@@ -93,9 +102,9 @@ export class UserBusiness {
             throw new Error("Enter a name")
         }
 
-        const userId = authenticator.getTokenData(token)
+        const userId = this.authenticator.getTokenData(token)
 
-        await userData.editProfileName(userId.id, name)
+        const response = await this.userData.editProfileName(userId.id, name)
     }
 
     deleteUser = async(token: string) => {
@@ -103,8 +112,8 @@ export class UserBusiness {
             throw new Error("Login first")
         }
 
-        const userId = authenticator.getTokenData(token)
+        const userId = this.authenticator.getTokenData(token)
 
-        const response = await userData.deleteUser(userId.id)
+        const response = await this.userData.deleteUser(userId.id)
     }
 }

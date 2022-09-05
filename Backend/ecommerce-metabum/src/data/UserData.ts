@@ -2,15 +2,19 @@ import { User } from "../models/User";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserData extends BaseDatabase {
-    signup = async(user: User) => {
-        await this.connection("metabum_users")
-        .insert({
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            cpf: user.cpf,
-            password: user.password
-        })
+    signup = async (user: User) => {
+        try {
+            await this.connection("metabum_users")
+            .insert({
+                id: user.getId(),
+                name: user.getName(),
+                email: user.getEmail(),
+                password: user.getPassword(),
+                cpf: user.getCpf()
+            })
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
     }
 
     getUserByEmail = async(email: string) => {
@@ -74,6 +78,7 @@ export class UserData extends BaseDatabase {
             const response = await this.connection("metabum_users")
             .delete()
             .where({id: userId})
+
         }catch (error: any) {
             throw new Error(error.message)
         }
