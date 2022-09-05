@@ -14,8 +14,13 @@ import { Authenticator } from "../services/Authenticator";
 import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
 
-export const userController = new UserController()
-export const userBusiness = new UserBusiness()
+export const userBussines = new UserBusiness(
+    new Authenticator(),
+    new HashManager(),
+    new IdGenerator(),
+    new UserData(),
+)
+export const userController = new UserController(userBussines)
 export const userData = new UserData()
 
 export const cardController = new CardController()
