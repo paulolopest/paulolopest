@@ -1,6 +1,16 @@
-import { authenticator, idGenerator, productData, userData } from "../models/Classes"
+import { ProductData } from "../data/ProductData"
+import { UserData } from "../data/UserData"
+import { Product } from "../models/Product"
+import { Authenticator } from "../services/Authenticator"
+import { IdGenerator } from "../services/IdGenerator"
 
 export class ProductBusiness {
+    constructor (
+        private authenticator: Authenticator,
+        private idGenerator: IdGenerator,
+        private productData: ProductData,
+        private userData: UserData
+    ) {}
     insertProduct = async(name: string, productImg: string, price: number, tags: string, description: string, token: string) => {
         if(!token) {
             throw new Error("Login First")
@@ -25,33 +35,35 @@ export class ProductBusiness {
             throw new Error("Enter a description")
         }
 
-        const userId = authenticator.getTokenData(token)
-        const identify = await userData.getUserById(userId.id)
+        const userId = this.authenticator.getTokenData(token)
+        const identify = await this.userData.getUserById(userId.id)
 
         if(identify.role != "Administrator") {
             throw new Error("Just admin can insert products")
         }
-        const id = idGenerator.generateId()
+        const id = this.idGenerator.generateId()
 
-        await productData.insertProduct({
-            id: id,
-            name: name,
-            productImg: productImg,
-            price: price,
-            tags: tags,
-            description: description
-        })
+        await this.productData.insertProduct(
+            new Product (
+                id,
+                name,
+                productImg,
+                price,
+                tags,
+                description
+            )
+        )
     }
 
     getProducts = async (productName: string) => {
         if(!productName) {
-            const response = await productData.getProducts()
+            const response = await this.productData.getProducts()
 
             return response
         }
 
         if(productName){
-            const result = await productData.getProductByName(productName)
+            const result = await this.productData.getProductByName(productName)
 
             return result
         }
@@ -65,13 +77,13 @@ export class ProductBusiness {
             throw new Error("Enter a price")
         }
 
-        const userId = authenticator.getTokenData(token)
-        const identify = await userData.getUserById(userId.id)
+        const userId = this.authenticator.getTokenData(token)
+        const identify = await this.userData.getUserById(userId.id)
 
         if(identify.role != "Administrator") {
             throw new Error("Just administrator can edit the price")
         }
-        const response = await productData.editPrice(price, productId)
+        const response = await this.productData.editPrice(price, productId)
     }
 
     deleteProduct = async(token: string, productId: string) => {
@@ -82,14 +94,14 @@ export class ProductBusiness {
             throw new Error("Enter a product id")
         }
 
-        const userId = authenticator.getTokenData(token)
-        const identify = await userData.getUserById(userId.id)
+        const userId = this.authenticator.getTokenData(token)
+        const identify = await this.userData.getUserById(userId.id)
 
         if(identify.role != "Administrator") {
             throw new Error("Just admin can delete product")
         }
 
-        const response = await productData.deleteProduct(productId)
+        const response = await this.productData.deleteProduct(productId)
     }
 
 }

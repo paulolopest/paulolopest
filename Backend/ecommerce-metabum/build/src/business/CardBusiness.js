@@ -10,10 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CardBusiness = void 0;
-const Classes_1 = require("../models/Classes");
+const Card_1 = require("../models/Card");
 const Date_1 = require("../services/Date");
 class CardBusiness {
-    constructor() {
+    constructor(authenticator, hashManager, idGenerator, cardData) {
+        this.authenticator = authenticator;
+        this.hashManager = hashManager;
+        this.idGenerator = idGenerator;
+        this.cardData = cardData;
         this.createCard = (name, number, cvv, validationDate, token) => __awaiter(this, void 0, void 0, function* () {
             if (!name) {
                 throw new Error("Enter a name");
@@ -40,28 +44,21 @@ class CardBusiness {
             if (!token) {
                 throw new Error("Login first");
             }
-            const userId = Classes_1.authenticator.getTokenData(token);
-            const cardExist = yield Classes_1.cardData.validateCard(number, userId.id);
+            const userId = this.authenticator.getTokenData(token);
+            const cardExist = yield this.cardData.validateCard(number, userId.id);
             if (cardExist) {
                 throw new Error("Card already registered");
             }
-            const id = Classes_1.idGenerator.generateId();
-            const cypherCvv = yield Classes_1.hashManager.generateHash(cvv);
-            yield Classes_1.cardData.createCard({
-                id: id,
-                name: name,
-                number: number,
-                cvv: cypherCvv,
-                validationDate: validationDate,
-                userId: userId.id
-            });
+            const id = this.idGenerator.generateId();
+            const cypherCvv = yield this.hashManager.generateHash(cvv);
+            yield this.cardData.createCard(new Card_1.Card(id, name, number, cypherCvv, validationDate, userId));
         });
         this.getAllCards = (token) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {
                 throw new Error("Login first");
             }
-            const userId = Classes_1.authenticator.getTokenData(token);
-            const response = yield Classes_1.cardData.getAllCards(userId.id);
+            const userId = this.authenticator.getTokenData(token);
+            const response = yield this.cardData.getAllCards(userId.id);
             return response;
         });
         this.deleteCard = (token, cardId) => __awaiter(this, void 0, void 0, function* () {
@@ -71,7 +68,7 @@ class CardBusiness {
             if (!cardId) {
                 throw new Error("Enter a card id");
             }
-            const response = yield Classes_1.cardData.deleteCard(cardId);
+            const response = yield this.cardData.deleteCard(cardId);
         });
     }
 }

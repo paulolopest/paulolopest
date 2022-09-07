@@ -1,10 +1,13 @@
+import { AuthenticationData } from "./AuthenticationData"
+
 export class User {
     constructor(
         private id: string,
         private name: string,
         private email: string,
         private password: string,
-        private cpf: string
+        private cpf: string,
+        private role: string
     ){}
 
     public getId(): string {
@@ -25,6 +28,10 @@ export class User {
 
     public getCpf(): string {
         return this.cpf
+    }
+
+    public getRole(): string {
+        return this.role
     }
 }
 

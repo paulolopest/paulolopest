@@ -17,12 +17,12 @@ class CardData extends BaseDatabase_1.BaseDatabase {
         this.createCard = (card) => __awaiter(this, void 0, void 0, function* () {
             yield this.connection("metabum_card")
                 .insert({
-                id: card.id,
-                name: card.name,
-                number: card.number,
-                cvv: card.cvv,
-                validation_date: card.validationDate,
-                user_id: card.userId
+                id: card.getId(),
+                name: card.getName(),
+                number: card.getNumber(),
+                cvv: card.getCvv(),
+                validation_date: card.getValidationDate(),
+                user_id: card.getUserId()
             });
         });
         this.selectCardByNumber = (number) => __awaiter(this, void 0, void 0, function* () {

@@ -50,7 +50,7 @@ export class UserBusiness {
         const cypherPassword = await this.hashManager.generateHash(password)
 
         await this.userData.signup(
-            new User(id, name, email, cypherPassword, cpf)
+            new User(id, name, email, cypherPassword, cpf, "Normal")
         )
 
         const token = this.authenticator.generateToken({id: id})

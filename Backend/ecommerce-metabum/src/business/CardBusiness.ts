@@ -1,7 +1,17 @@
-import { authenticator, cardData, hashManager, idGenerator } from "../models/Classes"
+import { CardData } from "../data/CardData"
+import { Card } from "../models/Card"
+import { Authenticator } from "../services/Authenticator"
 import { verifyDate } from "../services/Date"
+import { HashManager } from "../services/HashManager"
+import { IdGenerator } from "../services/IdGenerator"
 
 export class CardBusiness {
+    constructor (
+        private authenticator: Authenticator,
+        private hashManager: HashManager,
+        private idGenerator: IdGenerator,
+        private cardData: CardData,
+    ) {}
     createCard = async(name: string, number: string, cvv: string, validationDate: Date, token: string) => {
         if(!name) {
             throw new Error("Enter a name")
@@ -28,24 +38,26 @@ export class CardBusiness {
         if(!token) {
             throw new Error("Login first")
         }
-        const userId = authenticator.getTokenData(token)
-        const cardExist = await cardData.validateCard(number, userId.id)
+        const userId = this.authenticator.getTokenData(token)
+        const cardExist = await this.cardData.validateCard(number, userId.id)
 
         if(cardExist) {
             throw new Error("Card already registered")
         }
 
-        const id = idGenerator.generateId()
-        const cypherCvv = await hashManager.generateHash(cvv)
+        const id = this.idGenerator.generateId()
+        const cypherCvv = await this.hashManager.generateHash(cvv)
 
-        await cardData.createCard({
-            id: id,
-            name: name,
-            number: number,
-            cvv: cypherCvv,
-            validationDate: validationDate,
-            userId: userId.id
-        })
+        await this.cardData.createCard(
+            new Card(
+                id,
+                name,
+                number,
+                cypherCvv,
+                validationDate,
+                userId
+            )
+        )
     }
 
     getAllCards = async(token: string) => {
@@ -53,9 +65,9 @@ export class CardBusiness {
             throw new Error("Login first")
         }
 
-        const userId = authenticator.getTokenData(token)
+        const userId = this.authenticator.getTokenData(token)
 
-        const response = await cardData.getAllCards(userId.id)
+        const response = await this.cardData.getAllCards(userId.id)
 
         return response
     }
@@ -68,6 +80,6 @@ export class CardBusiness {
             throw new Error("Enter a card id")
         }
 
-        const response = await cardData.deleteCard(cardId)
+        const response = await this.cardData.deleteCard(cardId)
     }
 }

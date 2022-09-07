@@ -10,9 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductBusiness = void 0;
-const Classes_1 = require("../models/Classes");
+const Product_1 = require("../models/Product");
 class ProductBusiness {
-    constructor() {
+    constructor(authenticator, idGenerator, productData, userData) {
+        this.authenticator = authenticator;
+        this.idGenerator = idGenerator;
+        this.productData = productData;
+        this.userData = userData;
         this.insertProduct = (name, productImg, price, tags, description, token) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {
                 throw new Error("Login First");
@@ -38,28 +42,21 @@ class ProductBusiness {
             if (!description) {
                 throw new Error("Enter a description");
             }
-            const userId = Classes_1.authenticator.getTokenData(token);
-            const identify = yield Classes_1.userData.getUserById(userId.id);
+            const userId = this.authenticator.getTokenData(token);
+            const identify = yield this.userData.getUserById(userId.id);
             if (identify.role != "Administrator") {
                 throw new Error("Just admin can insert products");
             }
-            const id = Classes_1.idGenerator.generateId();
-            yield Classes_1.productData.insertProduct({
-                id: id,
-                name: name,
-                productImg: productImg,
-                price: price,
-                tags: tags,
-                description: description
-            });
+            const id = this.idGenerator.generateId();
+            yield this.productData.insertProduct(new Product_1.Product(id, name, productImg, price, tags, description));
         });
         this.getProducts = (productName) => __awaiter(this, void 0, void 0, function* () {
             if (!productName) {
-                const response = yield Classes_1.productData.getProducts();
+                const response = yield this.productData.getProducts();
                 return response;
             }
             if (productName) {
-                const result = yield Classes_1.productData.getProductByName(productName);
+                const result = yield this.productData.getProductByName(productName);
                 return result;
             }
         });
@@ -70,12 +67,12 @@ class ProductBusiness {
             if (!price) {
                 throw new Error("Enter a price");
             }
-            const userId = Classes_1.authenticator.getTokenData(token);
-            const identify = yield Classes_1.userData.getUserById(userId.id);
+            const userId = this.authenticator.getTokenData(token);
+            const identify = yield this.userData.getUserById(userId.id);
             if (identify.role != "Administrator") {
                 throw new Error("Just administrator can edit the price");
             }
-            const response = yield Classes_1.productData.editPrice(price, productId);
+            const response = yield this.productData.editPrice(price, productId);
         });
         this.deleteProduct = (token, productId) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {
@@ -84,12 +81,12 @@ class ProductBusiness {
             if (!productId) {
                 throw new Error("Enter a product id");
             }
-            const userId = Classes_1.authenticator.getTokenData(token);
-            const identify = yield Classes_1.userData.getUserById(userId.id);
+            const userId = this.authenticator.getTokenData(token);
+            const identify = yield this.userData.getUserById(userId.id);
             if (identify.role != "Administrator") {
                 throw new Error("Just admin can delete product");
             }
-            const response = yield Classes_1.productData.deleteProduct(productId);
+            const response = yield this.productData.deleteProduct(productId);
         });
     }
 }

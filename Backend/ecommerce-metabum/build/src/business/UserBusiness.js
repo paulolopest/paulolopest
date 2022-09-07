@@ -49,7 +49,7 @@ class UserBusiness {
             }
             const id = this.idGenerator.generateId();
             const cypherPassword = yield this.hashManager.generateHash(password);
-            yield this.userData.signup(new User_1.User(id, name, email, cypherPassword, cpf));
+            yield this.userData.signup(new User_1.User(id, name, email, cypherPassword, cpf, "Normal"));
             const token = this.authenticator.generateToken({ id: id });
             return token;
         });
@@ -98,8 +98,6 @@ class UserBusiness {
             }
             const userId = this.authenticator.getTokenData(token);
             const response = yield this.userData.deleteUser(userId.id);
-            console.log(response);
-            return response;
         });
     }
 }

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyDate = void 0;
+exports.today = exports.verifyDate = void 0;
 const verifyDate = (validationDate) => __awaiter(void 0, void 0, void 0, function* () {
     let today = new Date();
     let informedDate = new Date(validationDate);
@@ -19,4 +19,5 @@ const verifyDate = (validationDate) => __awaiter(void 0, void 0, void 0, functio
     return verify;
 });
 exports.verifyDate = verifyDate;
+exports.today = new Date();
 //# sourceMappingURL=Date.js.map

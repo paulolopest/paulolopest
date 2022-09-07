@@ -15,25 +15,25 @@ class PaymentData extends BaseDatabase_1.BaseDatabase {
     constructor() {
         super(...arguments);
         this.creditPayment = (creditPayment) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.connection("metabum_creditPayment")
+            yield this.connection("metabum_creditPayment")
                 .insert({
-                id: creditPayment.id,
-                user_id: creditPayment.userId,
-                product_id: creditPayment.productId,
-                card_number: creditPayment.cardNumber,
-                card_name: creditPayment.cardName,
-                card_validation: creditPayment.cardValidation,
-                date: creditPayment.date
+                id: creditPayment.getId(),
+                user_id: creditPayment.getUserId(),
+                product_id: creditPayment.getProductId(),
+                card_number: creditPayment.getCardNumber(),
+                card_name: creditPayment.getCardName(),
+                card_validation: creditPayment.getCardValidation(),
+                date: creditPayment.getDate()
             });
         });
         this.boletoPayment = (boletoPayment) => __awaiter(this, void 0, void 0, function* () {
-            const reponse = yield this.connection("metabum_boletoPayment")
+            yield this.connection("metabum_boletoPayment")
                 .insert({
-                id: boletoPayment.id,
-                user_id: boletoPayment.userId,
-                product_id: boletoPayment.productId,
-                date: boletoPayment.date,
-                bar_code: boletoPayment.barCode
+                id: boletoPayment.getId(),
+                user_id: boletoPayment.getUserId(),
+                product_id: boletoPayment.getProductId(),
+                date: boletoPayment.getDate(),
+                bar_code: boletoPayment.getBarCode()
             });
         });
         this.getCardPayment = (userId) => __awaiter(this, void 0, void 0, function* () {
