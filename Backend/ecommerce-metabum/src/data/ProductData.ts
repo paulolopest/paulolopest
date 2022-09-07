@@ -3,14 +3,14 @@ import { BaseDatabase } from "./BaseDatabase";
 
 export class ProductData extends BaseDatabase {
     insertProduct = async(product: Product) => {
-        const response = await this.connection("metabum_products")
+        await this.connection("metabum_products")
         .insert({
-            id: product.id,
-            name: product.name,
-            product_img: product.productImg,
-            price: product.price,
-            tags: product.tags,
-            description: product.description
+            id: product.getId(),
+            name: product.getName(),
+            product_img: product.getProductImg(),
+            price: product.getPrice(),
+            tags: product.getTags(),
+            description: product.getDescription()
         })
     }
 

@@ -1,5 +1,4 @@
-import { AuthenticationData } from "../../src/models/AuthenticationData"
-import { userMock } from "./UserMock"
+import { AuthenticationData } from "../../../src/models/AuthenticationData"
 
 export class AuthenticatorMock {
     generateToken = (id: AuthenticationData): string => {

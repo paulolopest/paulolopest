@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserBusiness_1 = require("../src/business/UserBusiness");
-const AuthenticatorMock_1 = require("./mocks/AuthenticatorMock");
-const HashManagerMock_1 = require("./mocks/HashManagerMock");
-const IdGeneratorMock_1 = require("./mocks/IdGeneratorMock");
-const UserDatabaseMock_1 = require("./mocks/UserDatabaseMock");
+const AuthenticatorMock_1 = require("./mocks/servicesMock/AuthenticatorMock");
+const HashManagerMock_1 = require("./mocks/servicesMock/HashManagerMock");
+const IdGeneratorMock_1 = require("./mocks/servicesMock/IdGeneratorMock");
+const UserDatabaseMock_1 = require("./mocks/userMock/UserDatabaseMock");
 const userBusinessMock = new UserBusiness_1.UserBusiness(new AuthenticatorMock_1.AuthenticatorMock(), new HashManagerMock_1.HashManagerMock(), new IdGeneratorMock_1.IdGeneratorMock(), new UserDatabaseMock_1.UserDatabaseMock());
 describe("Signup Test", () => {
     test("Return when name is empty", () => __awaiter(void 0, void 0, void 0, function* () {

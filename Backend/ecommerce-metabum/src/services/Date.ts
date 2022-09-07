@@ -9,3 +9,5 @@ export const verifyDate = async(validationDate:Date):Promise <boolean> => {
 
     return verify
 }
+
+export let today = new Date()

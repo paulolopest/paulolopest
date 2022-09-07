@@ -1,8 +1,8 @@
 import { UserBusiness } from "../src/business/UserBusiness";
-import { AuthenticatorMock } from "./mocks/AuthenticatorMock";
-import { HashManagerMock } from "./mocks/HashManagerMock";
-import { IdGeneratorMock } from "./mocks/IdGeneratorMock";
-import { UserDatabaseMock } from "./mocks/UserDatabaseMock";
+import { AuthenticatorMock } from "./mocks/servicesMock/AuthenticatorMock";
+import { HashManagerMock } from "./mocks/servicesMock/HashManagerMock";
+import { IdGeneratorMock } from "./mocks/servicesMock/IdGeneratorMock";
+import { UserDatabaseMock } from "./mocks/userMock/UserDatabaseMock";
 
 const userBusinessMock = new UserBusiness(
   new AuthenticatorMock(),
@@ -305,8 +305,6 @@ describe("Edit profile name test", () => {
     try {
       const result = await userBusinessMock.editProfileName("mocked_token", "Paulo");
 
-      // console.log(result);
-      // expect(result).toBeDefined()
     } catch (error: any) {
       throw new Error(error.message);
     }

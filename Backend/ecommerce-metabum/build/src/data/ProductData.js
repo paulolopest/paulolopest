@@ -15,14 +15,14 @@ class ProductData extends BaseDatabase_1.BaseDatabase {
     constructor() {
         super(...arguments);
         this.insertProduct = (product) => __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.connection("metabum_products")
+            yield this.connection("metabum_products")
                 .insert({
-                id: product.id,
-                name: product.name,
-                product_img: product.productImg,
-                price: product.price,
-                tags: product.tags,
-                description: product.description
+                id: product.getId(),
+                name: product.getName(),
+                product_img: product.getProductImg(),
+                price: product.getPrice(),
+                tags: product.getTags(),
+                description: product.getDescription()
             });
         });
         this.getProducts = () => __awaiter(this, void 0, void 0, function* () {

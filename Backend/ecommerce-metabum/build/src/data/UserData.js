@@ -85,8 +85,6 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                 const response = yield this.connection("metabum_users")
                     .delete()
                     .where({ id: userId });
-                console.log(response);
-                return response;
             }
             catch (error) {
                 throw new Error(error.message);

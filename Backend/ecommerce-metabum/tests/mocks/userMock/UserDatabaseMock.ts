@@ -1,4 +1,4 @@
-import { User } from "../../src/models/User";
+import { User } from "../../../src/models/User";
 import { userMock } from "./UserMock";
 
 export class UserDatabaseMock {

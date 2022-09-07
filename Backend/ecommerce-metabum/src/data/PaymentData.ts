@@ -1,29 +1,28 @@
-import { paymentBusiness, paymentData } from "../models/Classes";
 import { BoletoPayment, CreditPayment } from "../models/Payment";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PaymentData extends BaseDatabase {
     creditPayment = async(creditPayment: CreditPayment) => {
-        const response = await this.connection("metabum_creditPayment")
+        await this.connection("metabum_creditPayment")
         .insert({
-            id: creditPayment.id,
-            user_id: creditPayment.userId,
-            product_id: creditPayment.productId,
-            card_number: creditPayment.cardNumber,
-            card_name: creditPayment.cardName,
-            card_validation: creditPayment.cardValidation,
-            date: creditPayment.date
+            id: creditPayment.getId(),
+            user_id: creditPayment.getUserId(),
+            product_id: creditPayment.getProductId(),
+            card_number: creditPayment.getCardNumber(),
+            card_name: creditPayment.getCardName(),
+            card_validation: creditPayment.getCardValidation(),
+            date: creditPayment.getDate()
         })
     }
 
     boletoPayment = async(boletoPayment: BoletoPayment) => {
-        const reponse = await this.connection("metabum_boletoPayment")
+        await this.connection("metabum_boletoPayment")
         .insert({
-            id: boletoPayment.id,
-            user_id: boletoPayment.userId,
-            product_id: boletoPayment.productId,
-            date: boletoPayment.date,
-            bar_code: boletoPayment.barCode
+            id: boletoPayment.getId(),
+            user_id: boletoPayment.getUserId(),
+            product_id: boletoPayment.getProductId(),
+            date: boletoPayment.getDate(),
+            bar_code: boletoPayment.getBarCode()
         })
     }
 
