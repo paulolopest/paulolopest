@@ -10,15 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentController = void 0;
-const Classes_1 = require("../models/Classes");
 class PaymentController {
-    constructor() {
+    constructor(paymentBusiness) {
+        this.paymentBusiness = paymentBusiness;
         this.creditPayment = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
                 const productId = req.params.productId;
                 const { cardNumber, cvv, cardName, cardValidation } = req.body;
-                const response = yield Classes_1.paymentBusiness.creditPayment(cardNumber, cvv, cardName, token, productId, cardValidation);
+                const response = yield this.paymentBusiness.creditPayment(cardNumber, cvv, cardName, token, productId, cardValidation);
                 res.send("Purchase made");
             }
             catch (error) {
@@ -29,7 +29,7 @@ class PaymentController {
             try {
                 const token = req.headers.authorization;
                 const productId = req.params.productId;
-                const response = yield Classes_1.paymentBusiness.boletoPayment(token, productId);
+                const response = yield this.paymentBusiness.boletoPayment(token, productId);
                 res.send("Purchase made");
             }
             catch (error) {
@@ -39,7 +39,7 @@ class PaymentController {
         this.getBoletoPayment = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
-                const response = yield Classes_1.paymentBusiness.getBoletoPayment(token);
+                const response = yield this.paymentBusiness.getBoletoPayment(token);
                 res.send(response);
             }
             catch (error) {
@@ -49,7 +49,7 @@ class PaymentController {
         this.getCardPayment = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
-                const response = yield Classes_1.paymentBusiness.getCardPayment(token);
+                const response = yield this.paymentBusiness.getCardPayment(token);
                 res.send(response);
             }
             catch (error) {

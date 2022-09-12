@@ -40,7 +40,7 @@ class PaymentBusiness {
             if (isInvalid) {
                 throw new Error("Invalid date");
             }
-            const response = yield this.paymentData.creditPayment(new Payment_1.CreditPayment(id, userId, productId, cardNumber, cardName, cardValidation, today));
+            yield this.paymentData.creditPayment(new Payment_1.CreditPayment(id, userId, productId, cardNumber, cardName, cardValidation, today));
         });
         this.boletoPayment = (token, productId) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {
@@ -50,7 +50,7 @@ class PaymentBusiness {
             const userId = this.authenticator.getTokenData(token);
             const today = new Date();
             const barCode = this.idGenerator.generateId();
-            const response = yield this.paymentData.boletoPayment(new Payment_1.BoletoPayment(paymentId, userId, productId, today, barCode));
+            yield this.paymentData.boletoPayment(new Payment_1.BoletoPayment(paymentId, userId, productId, today, barCode));
         });
         this.getCardPayment = (token) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {

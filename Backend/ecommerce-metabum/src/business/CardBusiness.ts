@@ -12,6 +12,7 @@ export class CardBusiness {
         private idGenerator: IdGenerator,
         private cardData: CardData,
     ) {}
+    
     createCard = async(name: string, number: string, cvv: string, validationDate: Date, token: string) => {
         if(!name) {
             throw new Error("Enter a name")

@@ -1,11 +1,11 @@
 import {Request, Response} from "express"
 import { CardBusiness } from "../business/CardBusiness"
-import { today } from "../services/Date"
 
 export class CardController {
     constructor(
         private cardBusiness: CardBusiness
     ) {}
+
     createCard = async(req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string

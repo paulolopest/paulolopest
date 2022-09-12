@@ -5,6 +5,7 @@ export class UserController {
     constructor(
         private userBussines: UserBusiness
     ) {}
+    
     signup = async(req: Request, res: Response) => {
         try {
             const {name, email, cpf, password} = req.body

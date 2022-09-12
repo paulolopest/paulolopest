@@ -11,6 +11,7 @@ export class ProductBusiness {
         private productData: ProductData,
         private userData: UserData
     ) {}
+
     insertProduct = async(name: string, productImg: string, price: number, tags: string, description: string, token: string) => {
         if(!token) {
             throw new Error("Login First")
@@ -83,7 +84,7 @@ export class ProductBusiness {
         if(identify.role != "Administrator") {
             throw new Error("Just administrator can edit the price")
         }
-        const response = await this.productData.editPrice(price, productId)
+        await this.productData.editPrice(price, productId)
     }
 
     deleteProduct = async(token: string, productId: string) => {
@@ -101,7 +102,7 @@ export class ProductBusiness {
             throw new Error("Just admin can delete product")
         }
 
-        const response = await this.productData.deleteProduct(productId)
+        await this.productData.deleteProduct(productId)
     }
 
 }

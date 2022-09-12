@@ -22,16 +22,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Authenticator = void 0;
 const jwt = __importStar(require("jsonwebtoken"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 class Authenticator {
     constructor() {
         this.generateToken = (id) => {
-            return jwt.sign(id, "r2d2c3po", { expiresIn: "5h" });
+            return jwt.sign(id, process.env.SECRET_KEY, { expiresIn: process.env.SECRET_EXPIRE });
         };
         this.getTokenData = (token) => {
-            return jwt.verify(token, "r2d2c3po");
+            return jwt.verify(token, process.env.SECRET_KEY);
         };
     }
 }
