@@ -10,14 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductController = void 0;
-const Classes_1 = require("../models/Classes");
 class ProductController {
-    constructor() {
+    constructor(productBusiness) {
+        this.productBusiness = productBusiness;
         this.insertProduct = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
                 const { name, productImg, price, tags, description } = req.body;
-                const response = yield Classes_1.productBusiness.insertProduct(name, productImg, price, tags, description, token);
+                const response = yield this.productBusiness.insertProduct(name, productImg, price, tags, description, token);
                 res.status(201).send("Product added to stock");
             }
             catch (error) {
@@ -27,7 +27,7 @@ class ProductController {
         this.getProducts = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { productName } = req.query;
-                const response = yield Classes_1.productBusiness.getProducts(productName);
+                const response = yield this.productBusiness.getProducts(productName);
                 res.send(response);
             }
             catch (error) {
@@ -39,7 +39,7 @@ class ProductController {
                 const token = req.headers.authorization;
                 const productId = req.params.productId;
                 const { price } = req.body;
-                const response = yield Classes_1.productBusiness.editPrice(token, price, productId);
+                const response = yield this.productBusiness.editPrice(token, price, productId);
                 res.send(`The product price was updated to ${price}`);
             }
             catch (error) {
@@ -50,7 +50,7 @@ class ProductController {
             try {
                 const token = req.headers.authorization;
                 const productId = req.params.productId;
-                const response = yield Classes_1.productBusiness.deleteProduct(token, productId);
+                const response = yield this.productBusiness.deleteProduct(token, productId);
                 res.send("Product deleted");
             }
             catch (error) {

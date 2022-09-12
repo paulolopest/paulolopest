@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 export class HashManager {
-    generateHash = async(password: string) => {
+    generateHash = async(password: string): Promise <string> => {
         const rounds = Number(process.env.BYCRYP_COST)
         const salt = await bcrypt.genSalt(rounds)
 

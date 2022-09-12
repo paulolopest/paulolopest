@@ -72,7 +72,7 @@ class ProductBusiness {
             if (identify.role != "Administrator") {
                 throw new Error("Just administrator can edit the price");
             }
-            const response = yield this.productData.editPrice(price, productId);
+            yield this.productData.editPrice(price, productId);
         });
         this.deleteProduct = (token, productId) => __awaiter(this, void 0, void 0, function* () {
             if (!token) {
@@ -86,7 +86,7 @@ class ProductBusiness {
             if (identify.role != "Administrator") {
                 throw new Error("Just admin can delete product");
             }
-            const response = yield this.productData.deleteProduct(productId);
+            yield this.productData.deleteProduct(productId);
         });
     }
 }

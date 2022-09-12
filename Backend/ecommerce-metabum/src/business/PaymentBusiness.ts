@@ -10,6 +10,7 @@ export class PaymentBusiness {
         private idGenerator: IdGenerator,
         private paymentData: PaymentData
     ) {}
+
     creditPayment = async(cardNumber: string, cvv: string, cardName: string, token: string, productId: string, cardValidation: Date) => {
         if(!token) {
             throw new Error("Login first")
@@ -37,7 +38,7 @@ export class PaymentBusiness {
             throw new Error("Invalid date")
         }
 
-        const response = await this.paymentData.creditPayment(
+        await this.paymentData.creditPayment(
             new CreditPayment (
                 id,
                 userId,
@@ -60,7 +61,7 @@ export class PaymentBusiness {
         const today = new Date()
         const barCode = this.idGenerator.generateId()
 
-        const response = await this.paymentData.boletoPayment(
+        await this.paymentData.boletoPayment(
             new BoletoPayment (
                 paymentId,
                 userId,
@@ -80,6 +81,7 @@ export class PaymentBusiness {
 
         return response
     }
+    
     getBoletoPayment = async(token: string) => {
         if(!token) {
             throw new Error("Login first")

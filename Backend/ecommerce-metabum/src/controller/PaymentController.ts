@@ -1,14 +1,18 @@
 import { Request, Response } from "express";
-import { paymentBusiness, productBusiness } from "../models/Classes";
+import { PaymentBusiness } from "../business/PaymentBusiness";
 
 export class PaymentController {
+  constructor (
+    private paymentBusiness: PaymentBusiness
+  ){}
+
   creditPayment = async (req: Request, res: Response) => {
     try {
       const token = req.headers.authorization as string;
       const productId = req.params.productId;
       const { cardNumber, cvv, cardName, cardValidation } = req.body;
 
-      const response = await paymentBusiness.creditPayment(cardNumber, cvv, cardName, token, productId, cardValidation);
+      const response = await this.paymentBusiness.creditPayment(cardNumber, cvv, cardName, token, productId, cardValidation);
 
       res.send("Purchase made");
     } catch (error: any) {
@@ -21,7 +25,7 @@ export class PaymentController {
       const token = req.headers.authorization as string
       const productId = req.params.productId
 
-      const response = await paymentBusiness.boletoPayment(token, productId)
+      const response = await this.paymentBusiness.boletoPayment(token, productId)
 
       res.send("Purchase made")
     } catch (error: any) {
@@ -32,7 +36,7 @@ export class PaymentController {
   getBoletoPayment = async(req: Request, res: Response) => {
     try {
       const token = req.headers.authorization as string
-      const response = await paymentBusiness.getBoletoPayment(token)
+      const response = await this.paymentBusiness.getBoletoPayment(token)
 
       res.send(response)
     }catch (error: any) {
@@ -42,7 +46,7 @@ export class PaymentController {
   getCardPayment = async(req: Request, res: Response) => {
     try {
       const token = req.headers.authorization as string
-      const response = await paymentBusiness.getCardPayment(token)
+      const response = await this.paymentBusiness.getCardPayment(token)
 
       res.send(response)
     }catch (error: any) {
