@@ -10,11 +10,51 @@ export class UserData extends BaseDatabase {
             .insert({
                 id: user.getId(),
                 name: user.getName(),
+                nickname: user.getNickname(),
                 email: user.getEmail(),
                 password: user.getPassword(),
                 birth_date: user.getBirthDate(),
             })
 
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    editUser = async (userId: string, name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
+        try {
+            const response = await this.connection(this.tableName)
+            .update({
+                name,
+                nickname,
+                email,
+                password,
+                birthDate
+            })
+            .where({id: userId})
+
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+    
+    editPassword = async (password: string, id: string) => {
+        try {
+            await this.connection(this.tableName)
+            .update({password: password})
+            .where({id: id})
+            
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    getUserById = async (id: string) => {
+        try {
+            const response = await this.connection(this.tableName)
+            .where({id: id})
+
+            return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }
@@ -26,6 +66,28 @@ export class UserData extends BaseDatabase {
             .where({email})
 
             return response[0]
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    getUserByNick = async(nickname: string) => {
+        try {
+            const response = await this.connection(this.tableName)
+            .where({nickname: nickname})
+
+            return response[0]
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    deleteUser = async (id: string) => {
+        try {
+            await this.connection(this.tableName)
+            .delete()
+            .where({id: id})
+
         } catch (error:any) {
             throw new Error(error.message)
         }

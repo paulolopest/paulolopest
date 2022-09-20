@@ -21,10 +21,41 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                     .insert({
                     id: user.getId(),
                     name: user.getName(),
+                    nickname: user.getNickname(),
                     email: user.getEmail(),
                     password: user.getPassword(),
                     birth_date: user.getBirthDate(),
                 });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getUserByEmail = (email) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection(this.tableName)
+                    .where({ email });
+                return response[0];
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getUserByNick = (nickname) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection(this.tableName)
+                    .where({ nickname: nickname });
+                return response[0];
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection(this.tableName)
+                    .delete()
+                    .where({ id: id });
             }
             catch (error) {
                 throw new Error(error.message);
