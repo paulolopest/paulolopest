@@ -33,7 +33,7 @@ dotenv_1.default.config();
 class TokenManager {
     constructor() {
         this.generate = (id) => {
-            return jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: process.env.EXPIRE_VALUE });
+            return jwt.sign(id, process.env.SECRET_KEY, { expiresIn: process.env.EXPIRE_VALUE });
         };
         this.getTokenData = (token) => {
             return jwt.verify(token, process.env.SECRET_KEY);

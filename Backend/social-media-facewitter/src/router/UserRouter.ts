@@ -16,4 +16,10 @@ const userController: UserController = new UserController(userBusiness)
 
 export const userRouter: Router = express.Router()
 
+// Routes
+
 userRouter.post("/signup", userController.signup)
+userRouter.post("/login", userController.login)
+userRouter.put("/:user-id/edit", userController.editUser)
+userRouter.put("/user-id/edit-password", userController.editPassword)
+userRouter.delete("/:user-id/delete", userController.deleteUser)

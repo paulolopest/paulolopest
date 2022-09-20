@@ -15,12 +15,40 @@ class UserController {
         this.userBusiness = userBusiness;
         this.signup = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, email, password, birthDate } = req.body;
-                const response = yield this.userBusiness.signup(name, email, password, birthDate);
-                res.send(response);
+                const { name, nickname, email, password, birthDate } = req.body;
+                const response = yield this.userBusiness.signup(name, nickname, email, password, birthDate);
+                res.status(200).send(response);
             }
             catch (error) {
-                res.send(error.message);
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { email, password } = req.body;
+                const response = yield this.userBusiness.login(email, password);
+                res.status(200).send(response);
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.deleteUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                yield this.userBusiness.deleteUser(token);
+                res.send("User deleted");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.editUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, email, password, birthDate } = req.body;
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
             }
         });
     }

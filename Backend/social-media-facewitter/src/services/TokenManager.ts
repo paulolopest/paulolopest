@@ -5,9 +5,9 @@ import { AuthenticationData } from "../models/AuthenticationData"
 dotenv.config()
 
 export class TokenManager {
-    generate = (id: AuthenticationData): string => {
+    generate =  (id: AuthenticationData): string => {
         return jwt.sign(
-            {id},
+            id,
             process.env.SECRET_KEY as jwt.Secret,
             {expiresIn: process.env.EXPIRE_VALUE}
     )}

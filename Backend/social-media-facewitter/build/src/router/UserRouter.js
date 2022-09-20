@@ -15,4 +15,6 @@ const userBusiness = new UserBusiness_1.UserBusiness(new UserData_1.UserData(), 
 const userController = new UserController_1.UserController(userBusiness);
 exports.userRouter = express_1.default.Router();
 exports.userRouter.post("/signup", userController.signup);
+exports.userRouter.post("/login", userController.login);
+exports.userRouter.delete("/delete", userController.deleteUser);
 //# sourceMappingURL=UserRouter.js.map
