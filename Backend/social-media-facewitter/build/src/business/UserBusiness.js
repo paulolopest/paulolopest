@@ -59,7 +59,7 @@ class UserBusiness {
                 return token;
             }
             catch (error) {
-                throw new Error(error.message);
+                throw new CustomError_1.CustomError(404, error.message);
             }
         });
         this.login = (email, password) => __awaiter(this, void 0, void 0, function* () {
@@ -81,7 +81,7 @@ class UserBusiness {
                 }
                 const user = yield this.userData.getUserByEmail(email);
                 if (!user) {
-                    throw new CustomError_1.CustomError(404, "User not found");
+                    throw new CustomError_1.CustomError(406, "User not found");
                 }
                 const verifyPassword = yield this.hashManager.compare(password, user.password);
                 if (!verifyPassword) {
@@ -91,7 +91,49 @@ class UserBusiness {
                 return token;
             }
             catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.editUser = (token, name, nickname, email, password, birthDate) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                const userId = this.tokenManager.getTokenData(token);
+                yield this.userData.editUser(userId.id, name, nickname, email, password, birthDate);
+            }
+            catch (error) {
                 throw new Error(error.message);
+            }
+        });
+        this.editPassword = (currentPassword, newPassword, token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!currentPassword) {
+                    throw new CustomError_1.CustomError(400, "Enter your current password");
+                }
+                if (!currentPassword) {
+                    throw new CustomError_1.CustomError(400, "Enter your new password");
+                }
+                else if (currentPassword.length <= 6) {
+                    throw new CustomError_1.CustomError(400, "Password must contain more than 6 characters");
+                }
+                if (newPassword === currentPassword) {
+                    throw new CustomError_1.CustomError(406, "The password cannot be the same");
+                }
+                const userId = this.tokenManager.getTokenData(token);
+                const user = yield this.userData.getUserById(userId.id);
+                const verifyPassword = yield this.hashManager.compare(currentPassword, user.password);
+                if (!verifyPassword) {
+                    throw new CustomError_1.CustomError(422, "Incorrect password");
+                }
+                const hashPassword = yield this.hashManager.hash(newPassword);
+                yield this.userData.editPassword(hashPassword, userId.id);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
             }
         });
         this.deleteUser = (token) => __awaiter(this, void 0, void 0, function* () {
@@ -103,7 +145,7 @@ class UserBusiness {
                 yield this.userData.deleteUser(user.id);
             }
             catch (error) {
-                throw new Error(error.message);
+                throw new CustomError_1.CustomError(404, error.message);
             }
         });
     }
