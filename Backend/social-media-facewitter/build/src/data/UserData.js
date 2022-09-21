@@ -31,6 +31,42 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                 throw new Error(error.message);
             }
         });
+        this.editUser = (userId, name, nickname, email, password, birthDate) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection(this.tableName)
+                    .update({
+                    name,
+                    nickname,
+                    email,
+                    password,
+                    birthDate
+                })
+                    .where({ id: userId });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.editPassword = (password, id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection(this.tableName)
+                    .update({ password: password })
+                    .where({ id: id });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getUserById = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection(this.tableName)
+                    .where({ id: id });
+                return response[0];
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
         this.getUserByEmail = (email) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield this.connection(this.tableName)

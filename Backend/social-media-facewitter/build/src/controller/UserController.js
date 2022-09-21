@@ -37,7 +37,7 @@ class UserController {
             try {
                 const token = req.headers.authorization;
                 yield this.userBusiness.deleteUser(token);
-                res.send("User deleted");
+                res.status(200).send("User deleted");
             }
             catch (error) {
                 res.status(404).send(error.sqlMessage || error.message);
@@ -45,7 +45,21 @@ class UserController {
         });
         this.editUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, email, password, birthDate } = req.body;
+                const token = req.headers.authorization;
+                const { name, nickname, email, password, birthDate } = req.body;
+                yield this.userBusiness.editUser(token, name, nickname, email, password, birthDate);
+                res.status(200).send("User updated");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.editPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { currentPassword, newPassword } = req.body;
+                yield this.userBusiness.editPassword(currentPassword, newPassword, token);
+                res.status(200).send("Password updated successfully");
             }
             catch (error) {
                 res.status(404).send(error.sqlMessage || error.message);

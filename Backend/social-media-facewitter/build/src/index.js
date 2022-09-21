@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const FollowRouter_1 = require("./router/FollowRouter");
 const UserRouter_1 = require("./router/UserRouter");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -17,4 +18,5 @@ const server = app.listen(process.env.PORT || 3003, () => {
     }
 });
 app.use(UserRouter_1.userRouter);
+app.use(FollowRouter_1.followRouter);
 //# sourceMappingURL=index.js.map
