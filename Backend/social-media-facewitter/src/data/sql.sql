@@ -10,7 +10,8 @@ DROP TABLE facewitter_follows;
 CREATE TABLE facewitter_follows (
     user_id VARCHAR(255) NOT NULL,
     followed_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES facewitter_users(id)
+    FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
+    FOREIGN KEY (followed_id) REFERENCES facewitter_users(id)
 );
 
 DESCRIBE facewitter_follows;

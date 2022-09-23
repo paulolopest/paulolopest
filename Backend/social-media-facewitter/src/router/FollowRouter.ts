@@ -13,4 +13,5 @@ const followController: FollowController = new FollowController (followBusiness)
 
 export const followRouter: Router = express.Router()
 
-followRouter.post("/:followedId/follow", followController.follow)
+followRouter.post("/:userId/follow", followController.follow)
+followRouter.delete("/:userId/unfollow", followController.unfollow)

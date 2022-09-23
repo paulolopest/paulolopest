@@ -1,4 +1,6 @@
 import { FollowData } from "../data/FollowData";
+import { UserData } from "../data/UserData";
+import { AuthenticationData } from "../models/AuthenticationData";
 import { CustomError } from "../models/CustomError";
 import { Follow } from "../models/Follow";
 import { TokenManager } from "../services/TokenManager";
@@ -6,7 +8,7 @@ import { TokenManager } from "../services/TokenManager";
 export class FollowBusiness {
     constructor(
         private followData: FollowData,
-        private tokenManager: TokenManager
+        private tokenManager: TokenManager,
         ) {}
 
     follow = async (token: string, followedId: string) => {
@@ -15,17 +17,21 @@ export class FollowBusiness {
                 throw new CustomError(401, "Login first")
             }
             if(!followedId) {
-                throw new CustomError(406, "Enter a id to follow")
+                throw new CustomError(404, "User not found")
             }
 
-            const user = this.tokenManager.getTokenData(token)
+            const idValidation: boolean = await this.followData.getUserById(followedId)
 
-            const followInfo = await this.followData.getFollowById(user.id)
+            if (!idValidation) {
+                throw new CustomError(422, "User not found")
+            }
+     
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            const verifyFollow: boolean = await this.followData.verifyFollow(user.id, followedId)
 
-            if(followInfo.user_id === user.id && followInfo.followed_id === followedId) {
+            if(verifyFollow) {
                 throw new CustomError(406, "User already followed")
             }
-            
 
             await this.followData.follow(
                 new Follow(
@@ -33,6 +39,34 @@ export class FollowBusiness {
                     followedId
                 )
             )
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    unfollow = async(token: string, followedId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!followedId) {
+                throw new CustomError(404, "User not found")
+            }
+
+            const idValidation: boolean = await this.followData.getUserById(followedId)
+
+            if (!idValidation) {
+                throw new CustomError(422, "User not found")
+            }
+     
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            const verifyFollow: boolean = await this.followData.verifyFollow(user.id, followedId)
+
+            if(!verifyFollow) {
+                throw new CustomError(406, "User not followed")
+            }
+
+            await this.followData.unfollow(user.id, followedId)
 
         } catch (error:any) {
             throw new CustomError(404, error.message)

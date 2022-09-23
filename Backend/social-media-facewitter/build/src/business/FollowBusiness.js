@@ -29,7 +29,6 @@ class FollowBusiness {
                 if (followInfo.user_id === user.id && followInfo.followed_id === followedId) {
                     throw new CustomError_1.CustomError(406, "User already followed");
                 }
-                console.log(followInfo);
                 yield this.followData.follow(new Follow_1.Follow(user.id, followedId));
             }
             catch (error) {
