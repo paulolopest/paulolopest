@@ -6,11 +6,23 @@ export class FollowController {
 
     follow = async (req: Request, res: Response) => {
         try {
-            const token =  req.headers.authorization as string
-            const followedId = req.body
-            const response = await this.followBusiness.follow(token, followedId)
+            const token: string = req.headers.authorization as string
+            const {userId} = req.params
+            await this.followBusiness.follow(token, userId)
 
-            res.send("User followed")
+            res.status(200).send("User followed")
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    unfollow = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {userId} = req.params
+            await this.followBusiness.unfollow(token, userId)
+
+            res.status(200).send("Unfollowed user")
         } catch (error:any) {
             res.status(404).send(error.sqlMessage || error.message)
         }

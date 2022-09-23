@@ -1,13 +1,13 @@
 export class Follow {
     constructor (
-        private userId: string,
-        private followedId: string
+        private user_id: string,
+        private followed_id: string
     ) {}
 
-    getUserId (): string {
-        return this.userId
+    public getUserId (): string {
+        return this.user_id
     }
-    getFollowedId (): string {
-        return this.followedId
+    public getFollowedId(): string {
+        return this.followed_id
     }
 }

@@ -1,3 +1,4 @@
+import { CustomError } from "../models/CustomError"
 import { Follow } from "../models/Follow"
 import { BaseDatabase } from "./BaseDatabase"
 
@@ -6,25 +7,49 @@ export class FollowData extends BaseDatabase {
 
     follow = async (follow: Follow) => {
         try {
-            await this.connection(this.tableName) 
+            await this.connection(this.tableName)
             .insert({
                 user_id: follow.getUserId(),
                 followed_id: follow.getFollowedId()
             })
-
+            
         } catch (error:any) {
-            throw new Error(error.message)
+            throw new CustomError(404, error.message)
         }
     }
 
-    getFollowById = async (id: string) => {
+    verifyFollow = async (userId: string, followedId: string) => {
         try {
             const response = await this.connection(this.tableName)
-            .where({user_id: id})
+            .where({user_id: userId})
+            .andWhere({followed_id: followedId})
+
+            return response [0]
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+    
+    getUserById = async (id: string) => {
+        try {
+            const response = await this.connection("facewitter_users")
+            .where({id: id})
 
             return response[0]
         } catch (error:any) {
-            throw new Error(error.message)
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    unfollow = async (userId: string, followedId: string) => {
+        try {
+            await this.connection(this.tableName)
+            .delete()
+            .where({user_id: userId})
+            .andWhere({followed_id: followedId})
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
         }
     }
 }

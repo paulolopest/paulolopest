@@ -16,8 +16,9 @@ class FollowController {
         this.follow = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
-                const followedId = req.params;
+                const followedId = req.body;
                 const response = yield this.followBusiness.follow(token, followedId);
+                console.log(followedId);
                 res.send("User followed");
             }
             catch (error) {
