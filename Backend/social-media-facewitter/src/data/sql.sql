@@ -15,3 +15,25 @@ CREATE TABLE facewitter_follows (
 );
 
 DESCRIBE facewitter_follows;
+
+CREATE TABLE facewitter_posts (
+   id VARCHAR(255) NOT NULL PRIMARY KEY,
+   user_id VARCHAR(255) NOT NULL,
+   image BLOB,
+   description VARCHAR(255),
+   likes INT DEFAULT 0,
+   created_at DATE NOT NULL,
+   FOREIGN KEY (user_id) REFERENCES facewitter_users(id)
+);
+
+CREATE TABLE facewitter_comments (
+    post_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    content VARCHAR(255) NOT NULL,
+    PRIMARY KEY (post_id, user_id),
+    FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
+    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
+);
+
+DROP TABLE facewitter_comments;
+DROP TABLE facewitter_posts;
