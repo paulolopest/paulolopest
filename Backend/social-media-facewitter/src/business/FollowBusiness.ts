@@ -72,4 +72,20 @@ export class FollowBusiness {
             throw new CustomError(404, error.message)
         }
     }
+
+    getFollowers = async (token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+    
+            const user = this.tokenManager.getTokenData(token)
+    
+            const response = await this.followData.getFollowers(user.id)
+
+            return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
 }

@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from "express"
 import {AddressInfo} from "net"
 import { followRouter } from "./router/FollowRouter"
+import { postRouter } from "./router/PostRouter"
 import { userRouter } from "./router/UserRouter"
 
 const app: Express = express()
@@ -17,3 +18,4 @@ const server = app.listen(process.env.PORT || 3003, () => {
 
 app.use(userRouter)
 app.use(followRouter)
+app.use(postRouter)

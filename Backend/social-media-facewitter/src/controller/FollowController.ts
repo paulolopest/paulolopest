@@ -27,4 +27,15 @@ export class FollowController {
             res.status(404).send(error.sqlMessage || error.message)
         }
     }
+
+    getFollowers = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const response = await this.followBusiness.getFollowers(token)
+
+            res.send(response)
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
 }
