@@ -1,7 +1,7 @@
 import { PostData } from "../data/PostData";
 import { CustomError } from "../models/CustomError";
+import { createdDate } from "../models/Date";
 import { Post } from "../models/Post";
-import { today } from "../services/Date";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
 
@@ -12,12 +12,12 @@ export class PostBusiness {
         private tokenManager: TokenManager
         ) {}
 
-    create = async (token: string, image: Blob,description?: string) => {
+    create = async (token: string, image: Blob,content?: string) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
             }
-            if(!description && !image) {
+            if(!content && !image) {
                 throw new CustomError(400, "The post must contain some content")
             }
     
@@ -30,9 +30,9 @@ export class PostBusiness {
                     id,
                     user.id,
                     likes,
-                    today,
+                    createdDate,
                     image,
-                    description
+                    content
                 )
             )
         } catch (error:any) {
@@ -40,7 +40,23 @@ export class PostBusiness {
         }
     }
 
-    editPost = async(token: string, postId: string, description: string) => {
+    getMyPosts = async(token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            
+            const user = await this.tokenManager.getTokenData(token)
+
+            const response = await this.postData.getMyPosts(user.id)
+
+            return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    editPost = async(token: string, postId: string, content: string) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
@@ -48,8 +64,8 @@ export class PostBusiness {
             if(!postId) {
                 throw new CustomError(400, "Enter a post id")
             }
-            if(!description) {
-                throw new CustomError(400, "Enter a description")
+            if(!content) {
+                throw new CustomError(400, "Enter a content")
             }
 
             const user = this.tokenManager.getTokenData(token)
@@ -62,7 +78,7 @@ export class PostBusiness {
                 throw new CustomError(406, "Post not exist")
             }
 
-            await this.postData.editPost(postId, description)
+            await this.postData.editPost(postId, content)
 
         } catch (error:any) {
             throw new CustomError(404, error.message)
@@ -89,6 +105,31 @@ export class PostBusiness {
             }
 
             await this.postData.deletePost(postId, user.id)
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    likePost = async (token: string, postId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!postId) {
+                throw new CustomError(400, "Enter a post id")
+            }
+
+            const post = await this.postData.getPostById(postId)
+            const user = this.tokenManager.getTokenData(token)
+
+            if(!post) {
+                throw new CustomError(400, "Post not exist")
+            }
+
+            console.log(postId)
+
+            await this.postData.likePost(postId)
+
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }

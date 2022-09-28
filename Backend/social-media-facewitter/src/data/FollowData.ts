@@ -53,6 +53,18 @@ export class FollowData extends BaseDatabase {
         }
     }
 
+    getFollowing = async (id: string) => {
+        try {
+            const response = await this.connection(this.tableName)
+            .select("followed_id")
+            .where({user_id: id})
+
+            return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
     getFollowers = async (id: string) => {
         try {
             const response = await this.connection(this.tableName)
