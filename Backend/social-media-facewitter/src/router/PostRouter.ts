@@ -17,6 +17,8 @@ export const postRouter: Router = express.Router()
 
 // Routes
 
+postRouter.post("/:postId/like", postController.likePost)
+postRouter.get("/profile/posts", postController.getMyPosts)
 postRouter.post("/:userId/create-post", postController.create)
 postRouter.put("/:postId/edit", postController.editPost)
 postRouter.delete("/:postId/delete", postController.deletePost)

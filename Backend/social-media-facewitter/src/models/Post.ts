@@ -3,9 +3,9 @@ export class Post {
         private id: string,
         private user_id: string,
         private likes: number,
-        private created_at: Date,
+        private created_at: Date | string,
         private image?: Blob,
-        private description?: string
+        private content?: string
     ) {}
 
     public getId(): string {
@@ -17,13 +17,13 @@ export class Post {
     public getLikes(): number {
         return this.likes
     }
-    public getDate(): Date {
+    public getDate(): Date | string{
         return this.created_at
     }
     public getImage(): Blob | undefined {
         return this.image
     }
-    public getDescription(): string | undefined {
-        return this.description
+    public getContent(): string | undefined {
+        return this.content
     }
 }
