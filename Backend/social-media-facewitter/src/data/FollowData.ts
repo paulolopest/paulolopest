@@ -1,6 +1,6 @@
 import { CustomError } from "../models/CustomError"
-import { Follow } from "../models/Follow"
 import { BaseDatabase } from "./BaseDatabase"
+import { Follow } from "../models/Follow"
 
 export class FollowData extends BaseDatabase {
     private tableName: string = "facewitter_follows"

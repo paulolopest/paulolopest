@@ -1,21 +1,24 @@
-import express, {Express, Request, Response} from "express"
-import {AddressInfo} from "net"
 import { followRouter } from "./router/FollowRouter"
-import { postRouter } from "./router/PostRouter"
 import { userRouter } from "./router/UserRouter"
+import { postRouter } from "./router/PostRouter"
+import express, {Express} from "express"
+import dotenv from "dotenv"
+import cors from "cors"
+
+dotenv.config()
 
 const app: Express = express()
 app.use(express.json())
+app.use(cors())
 
-const server = app.listen(process.env.PORT || 3003, () => {
-    if (server) {
-        const address = server.address() as AddressInfo;
-        console.log(`Server is running in http://localhost:${address.port}`);
+const server = app.listen(3000, () => {
+    if(server) {
+        console.log(`The server is running in localhost:3000`)
     } else {
-        console.error("Failed to start the server.");
+        console.log("Error in running the server")
     }
 })
 
 app.use(userRouter)
-app.use(followRouter)
 app.use(postRouter)
+app.use(followRouter)

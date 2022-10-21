@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostBusiness";
+import { Request, Response } from "express";
 
 export class PostController {
     constructor(private postBusiness: PostBusiness) {}
@@ -23,7 +23,7 @@ export class PostController {
 
             res.status(200).send(response)
         } catch (error:any) {
-            res.status(404).send(error.sqlMessage || error.message) 
+            res.status(404).send(error.sqlMessage || error.message)
         }
     }
 

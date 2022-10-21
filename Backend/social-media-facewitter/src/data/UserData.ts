@@ -1,3 +1,4 @@
+import { createdDate, currentTime } from "../models/Date";
 import { User } from "../models/User";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -16,6 +17,19 @@ export class UserData extends BaseDatabase {
                 birth_date: user.getBirthDate(),
             })
 
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    logout = async (userId:string, token: string) => {
+        try {
+            await this.connection("facewitter_blockList")
+            .insert({
+                user_id: userId,
+                expires_in: createdDate,
+                token
+            })
         } catch (error:any) {
             throw new Error(error.message)
         }
@@ -84,6 +98,9 @@ export class UserData extends BaseDatabase {
 
     deleteUser = async (id: string) => {
         try {
+            await this.connection("facewitter_follows")
+            .where({user_id: id})
+
             await this.connection(this.tableName)
             .delete()
             .where({id: id})

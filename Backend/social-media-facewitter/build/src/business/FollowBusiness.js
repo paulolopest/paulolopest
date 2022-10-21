@@ -22,14 +22,70 @@ class FollowBusiness {
                     throw new CustomError_1.CustomError(401, "Login first");
                 }
                 if (!followedId) {
-                    throw new CustomError_1.CustomError(406, "Enter a id to follow");
+                    throw new CustomError_1.CustomError(404, "User not found");
+                }
+                const idValidation = yield this.followData.getUserById(followedId);
+                if (!idValidation) {
+                    throw new CustomError_1.CustomError(422, "User not found");
                 }
                 const user = this.tokenManager.getTokenData(token);
-                const followInfo = yield this.followData.getFollowById(user.id);
-                if (followInfo.user_id === user.id && followInfo.followed_id === followedId) {
+                const verifyFollow = yield this.followData.verifyFollow(user.id, followedId);
+                if (verifyFollow) {
                     throw new CustomError_1.CustomError(406, "User already followed");
                 }
+                if (followedId === user.id) {
+                    throw new CustomError_1.CustomError(406, "You cant follow yourself");
+                }
                 yield this.followData.follow(new Follow_1.Follow(user.id, followedId));
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.unfollow = (token, followedId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!followedId) {
+                    throw new CustomError_1.CustomError(404, "User not found");
+                }
+                const idValidation = yield this.followData.getUserById(followedId);
+                if (!idValidation) {
+                    throw new CustomError_1.CustomError(422, "User not found");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const verifyFollow = yield this.followData.verifyFollow(user.id, followedId);
+                if (!verifyFollow) {
+                    throw new CustomError_1.CustomError(406, "User not followed");
+                }
+                yield this.followData.unfollow(user.id, followedId);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getFollowing = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login First");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const response = yield this.followData.getFollowing(user.id);
+                return response;
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getFollowers = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const response = yield this.followData.getFollowers(user.id);
+                return response;
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);

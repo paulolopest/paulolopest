@@ -1,5 +1,5 @@
-import { Post } from "../models/Post";
 import { BaseDatabase } from "./BaseDatabase";
+import { Post } from "../models/Post";
 
 export class PostData extends BaseDatabase {
     private tableName = "facewitter_posts"
@@ -51,7 +51,7 @@ export class PostData extends BaseDatabase {
 
             return response[0]
         } catch (error:any) {
-            throw new Error(error.message) 
+            throw new Error(error.message)
         }
     }
 
@@ -72,8 +72,6 @@ export class PostData extends BaseDatabase {
             await this.connection(this.tableName)
             .update({likes: +1})
             .where({id: postId})
-
-            console.log(postId)
 
         } catch (error:any) {
             throw new Error(error.message)

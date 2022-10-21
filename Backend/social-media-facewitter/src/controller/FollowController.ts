@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
 import { FollowBusiness } from "../business/FollowBusiness";
+import { Request, Response } from "express";
 
 export class FollowController {
     constructor (private followBusiness: FollowBusiness) {}

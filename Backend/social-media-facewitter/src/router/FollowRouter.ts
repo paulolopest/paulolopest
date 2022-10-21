@@ -1,7 +1,7 @@
-import { FollowBusiness } from "../business/FollowBusiness";
 import { FollowController } from "../controller/FollowController";
-import { FollowData } from "../data/FollowData";
+import { FollowBusiness } from "../business/FollowBusiness";
 import { TokenManager } from "../services/TokenManager";
+import { FollowData } from "../data/FollowData";
 import express, { Router } from "express"
 
 const followBusiness: FollowBusiness = new FollowBusiness (

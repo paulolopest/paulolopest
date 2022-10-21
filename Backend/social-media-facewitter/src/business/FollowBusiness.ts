@@ -1,8 +1,8 @@
-import { FollowData } from "../data/FollowData";
 import { AuthenticationData } from "../models/AuthenticationData";
-import { CustomError } from "../models/CustomError";
-import { Follow } from "../models/Follow";
 import { TokenManager } from "../services/TokenManager";
+import { CustomError } from "../models/CustomError";
+import { FollowData } from "../data/FollowData";
+import { Follow } from "../models/Follow";
 
 export class FollowBusiness {
     constructor(
@@ -80,7 +80,7 @@ export class FollowBusiness {
             if(!token) {
                 throw new CustomError(401, "Login First")
             }
-            const user = this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             const response = await this.followData.getFollowing(user.id)
 
@@ -91,13 +91,13 @@ export class FollowBusiness {
         }
     }
 
-    getFollowers = async (token: string) => {
+    getFollowers = async (token: string): Promise<any[]> => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
             }
     
-            const user = this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
     
             const response = await this.followData.getFollowers(user.id)
 

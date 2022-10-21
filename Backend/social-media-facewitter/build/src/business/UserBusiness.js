@@ -94,13 +94,25 @@ class UserBusiness {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
+        this.logout = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                yield this.userData.logout(user.id, token);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
         this.editUser = (token, name, nickname, email, password, birthDate) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
                     throw new CustomError_1.CustomError(401, "Login first");
                 }
-                const userId = this.tokenManager.getTokenData(token);
-                yield this.userData.editUser(userId.id, name, nickname, email, password, birthDate);
+                const user = this.tokenManager.getTokenData(token);
+                yield this.userData.editUser(user.id, name, nickname, email, password, birthDate);
             }
             catch (error) {
                 throw new Error(error.message);
@@ -140,6 +152,10 @@ class UserBusiness {
             try {
                 if (!token) {
                     throw new CustomError_1.CustomError(401, "Login first");
+                }
+                const verifyToken = yield this.tokenManager.verifyToken(token);
+                if (verifyToken) {
+                    throw new CustomError_1.CustomError(401, "Invalid Token");
                 }
                 const user = this.tokenManager.getTokenData(token);
                 yield this.userData.deleteUser(user.id);

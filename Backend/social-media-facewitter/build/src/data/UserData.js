@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserData = void 0;
+const Date_1 = require("../models/Date");
 const BaseDatabase_1 = require("./BaseDatabase");
 class UserData extends BaseDatabase_1.BaseDatabase {
     constructor() {
@@ -25,6 +26,19 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                     email: user.getEmail(),
                     password: user.getPassword(),
                     birth_date: user.getBirthDate(),
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.logout = (userId, token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection("facewitter_blockList")
+                    .insert({
+                    user_id: userId,
+                    expires_in: Date_1.createdDate,
+                    token
                 });
             }
             catch (error) {
@@ -89,6 +103,8 @@ class UserData extends BaseDatabase_1.BaseDatabase {
         });
         this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
             try {
+                yield this.connection("facewitter_follows")
+                    .where({ user_id: id });
                 yield this.connection(this.tableName)
                     .delete()
                     .where({ id: id });

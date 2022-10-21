@@ -1,9 +1,9 @@
-import express, { Router } from "express";
-import { PostBusiness } from "../business/PostBusiness";
 import { PostController } from "../controller/PostController";
-import { PostData } from "../data/PostData";
-import { IdGenerator } from "../services/IdGenerator";
+import { PostBusiness } from "../business/PostBusiness";
 import { TokenManager } from "../services/TokenManager";
+import { IdGenerator } from "../services/IdGenerator";
+import { PostData } from "../data/PostData";
+import express, { Router } from "express";
 
 const postBusiness: PostBusiness = new PostBusiness (
     new PostData(),

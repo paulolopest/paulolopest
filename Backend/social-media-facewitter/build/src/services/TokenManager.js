@@ -22,22 +22,41 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenManager = void 0;
+const BaseDatabase_1 = require("../data/BaseDatabase");
 const jwt = __importStar(require("jsonwebtoken"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-class TokenManager {
+class TokenManager extends BaseDatabase_1.BaseDatabase {
     constructor() {
+        super(...arguments);
         this.generate = (id) => {
             return jwt.sign(id, process.env.SECRET_KEY, { expiresIn: process.env.EXPIRE_VALUE });
         };
         this.getTokenData = (token) => {
             return jwt.verify(token, process.env.SECRET_KEY);
         };
+        this.verifyToken = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new Error("Enter a token");
+                }
+                const response = yield this.connection("facewitter_blockList")
+                    .where({ token: token });
+                return response;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
     }
 }
 exports.TokenManager = TokenManager;
