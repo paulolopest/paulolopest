@@ -10,12 +10,6 @@ export const verifyDate = async(validationDate:Date):Promise <boolean> => {
     return verify
 }
 
-// const data = new Date( Date.now() )
-// const today = data.toLocaleDateString( 'pt-BR' )
-// const time = new Date().toLocaleTimeString()
-// export const createdDate = ( `${today}, ${time}` )
-
 const today = new Date()
-const currentTime = today.getTime()
-
+export const currentTime = today.getTime()
 export const createdDate = new Date(currentTime)

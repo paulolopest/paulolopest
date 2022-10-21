@@ -1,16 +1,17 @@
-import { UserData } from "../data/UserData";
-import { CustomError } from "../models/CustomError";
-import { User } from "../models/User";
+import { AuthenticationData } from "../models/AuthenticationData";
+import { TokenManager } from "../services/TokenManager";
 import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
-import { TokenManager } from "../services/TokenManager";
+import { CustomError } from "../models/CustomError";
+import { UserData } from "../data/UserData";
+import { User } from "../models/User";
 
 export class UserBusiness {
     constructor (
         private userData: UserData,
         private idGenerator: IdGenerator,
         private hashManager: HashManager,
-        private tokenManager: TokenManager
+        private tokenManager: TokenManager,
     ) {}
 
     signup = async(name: string, nickname: string, email: string, password: string, birthDate: Date): Promise<string> => {
@@ -37,19 +38,19 @@ export class UserBusiness {
                 throw new CustomError(400, "Enter a birth date")
             }
 
-            const verifyEmail = await this.userData.getUserByEmail(email)
+            const verifyEmail: Boolean = await this.userData.getUserByEmail(email)
             if(verifyEmail) {
                 throw new CustomError(409, "Email already registered")
             }
 
-            const verifyNick = await this.userData.getUserByNick(nickname)
+            const verifyNick: Boolean = await this.userData.getUserByNick(nickname)
             if(verifyNick) {
                 throw new CustomError(409, "Nickname already registered")
             }
 
-            const id = this.idGenerator.generate()
+            const id: string = this.idGenerator.generate()
             const token: string = this.tokenManager.generate({id})
-            const hashPassword = await this.hashManager.hash(password)
+            const hashPassword: string = await this.hashManager.hash(password)
 
             await this.userData.signup(
                 new User(
@@ -84,13 +85,11 @@ export class UserBusiness {
             }
 
             const user = await this.userData.getUserByEmail(email)
-
             if(!user) {
                 throw new CustomError(406, "User not found")
             }
 
             const verifyPassword: boolean = await this.hashManager.compare(password, user.password)
-            
             if(!verifyPassword) {
                 throw new CustomError(422, "Incorrect password")
             }
@@ -104,14 +103,29 @@ export class UserBusiness {
         }
     }
 
+    logout = async (token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+
+            await this.userData.logout(user.id, token)
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
     editUser = async (token: string, name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
             }
-            const userId = this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
-            await this.userData.editUser(userId.id, name, nickname, email, password, birthDate)
+            await this.userData.editUser(user.id, name, nickname, email, password, birthDate)
         } catch (error:any) {
             throw new Error(error.message)
         }
@@ -135,15 +149,15 @@ export class UserBusiness {
                 throw new CustomError(406, "The password cannot be the same")
             }
 
-            const userId = this.tokenManager.getTokenData(token)
+            const userId: AuthenticationData = this.tokenManager.getTokenData(token)
             const user = await this.userData.getUserById(userId.id)
 
-            const verifyPassword = await this.hashManager.compare(currentPassword, user.password)
+            const verifyPassword: Boolean = await this.hashManager.compare(currentPassword, user.password)
             if(!verifyPassword) {
                 throw new CustomError(422, "Incorrect password")
             }
 
-            const hashPassword = await this.hashManager.hash(newPassword)
+            const hashPassword: string = await this.hashManager.hash(newPassword)
 
             await this.userData.editPassword(hashPassword, userId.id)
 
@@ -157,9 +171,15 @@ export class UserBusiness {
             if(!token) {
                 throw new CustomError(401, "Login first")
             }
-            const user = this.tokenManager.getTokenData(token)
+            
+            const verifyToken: any[] = await this.tokenManager.verifyToken(token)
+            if(verifyToken) {
+                throw new CustomError(401, "Invalid Token")
+            }
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             await this.userData.deleteUser(user.id)
+            
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }

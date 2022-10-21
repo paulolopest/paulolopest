@@ -1,9 +1,10 @@
-import { PostData } from "../data/PostData";
+import { AuthenticationData } from "../models/AuthenticationData";
+import { TokenManager } from "../services/TokenManager";
+import { IdGenerator } from "../services/IdGenerator";
 import { CustomError } from "../models/CustomError";
 import { createdDate } from "../models/Date";
+import { PostData } from "../data/PostData";
 import { Post } from "../models/Post";
-import { IdGenerator } from "../services/IdGenerator";
-import { TokenManager } from "../services/TokenManager";
 
 export class PostBusiness {
     constructor(
@@ -21,9 +22,9 @@ export class PostBusiness {
                 throw new CustomError(400, "The post must contain some content")
             }
     
-            const user = this.tokenManager.getTokenData(token)
-            const id = this.idGenerator.generate()
-            let likes = 0
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            const id: string = this.idGenerator.generate()
+            let likes: number = 0
     
             await this.postData.create(
                 new Post(
@@ -40,13 +41,13 @@ export class PostBusiness {
         }
     }
 
-    getMyPosts = async(token: string) => {
+    getMyPosts = async(token: string): Promise<any[]> => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
             }
             
-            const user = await this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             const response = await this.postData.getMyPosts(user.id)
 
@@ -68,7 +69,7 @@ export class PostBusiness {
                 throw new CustomError(400, "Enter a content")
             }
 
-            const user = this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
             const post = await this.postData.getPostById(postId)
 
             if(user.id != post.user_id) {
@@ -95,7 +96,7 @@ export class PostBusiness {
             }
 
             const post = await this.postData.getPostById(postId)
-            const user = this.tokenManager.getTokenData(token)
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             if(!post) {
                 throw new CustomError(400, "Post not exist")
@@ -105,6 +106,7 @@ export class PostBusiness {
             }
 
             await this.postData.deletePost(postId, user.id)
+
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }
@@ -120,13 +122,9 @@ export class PostBusiness {
             }
 
             const post = await this.postData.getPostById(postId)
-            const user = this.tokenManager.getTokenData(token)
-
             if(!post) {
                 throw new CustomError(400, "Post not exist")
             }
-
-            console.log(postId)
 
             await this.postData.likePost(postId)
 
@@ -134,4 +132,6 @@ export class PostBusiness {
             throw new CustomError(404, error.message)
         }
     }
+
+    
 }

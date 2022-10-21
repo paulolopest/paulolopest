@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
 import { UserBusiness } from "../business/UserBusiness";
+import { Request, Response } from "express";
 
 export class UserController {
     constructor (private userBusiness: UserBusiness) {}
@@ -21,6 +21,17 @@ export class UserController {
             const response: string = await this.userBusiness.login(email, password)
 
             res.status(200).send(response)
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    logout = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const response = await this.userBusiness.logout(token)
+
+            res.send("Logout")
         } catch (error:any) {
             res.status(404).send(error.sqlMessage || error.message)
         }
