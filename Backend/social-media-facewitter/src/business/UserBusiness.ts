@@ -118,6 +118,27 @@ export class UserBusiness {
         }
     }
 
+    getProfile = async (token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login First")
+            }
+            
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            const verify: Boolean = await this.userData.getUserById(user.id)
+            if(!verify) {
+                throw new CustomError(400, "User not found")
+            }
+
+            const response = await this.userData.getProfile(user.id)
+
+            return response
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
     editUser = async (token: string, name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
         try {
             if(!token) {

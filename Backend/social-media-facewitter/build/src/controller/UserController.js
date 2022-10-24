@@ -33,6 +33,16 @@ class UserController {
                 res.status(404).send(error.sqlMessage || error.message);
             }
         });
+        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const response = yield this.userBusiness.getProfile(token);
+                res.status(200).send(response);
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
         this.logout = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;

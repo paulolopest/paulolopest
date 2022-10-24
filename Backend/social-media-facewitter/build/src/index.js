@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const CommentRouter_1 = require("./router/CommentRouter");
 const FollowRouter_1 = require("./router/FollowRouter");
 const UserRouter_1 = require("./router/UserRouter");
 const PostRouter_1 = require("./router/PostRouter");
@@ -24,4 +25,5 @@ const server = app.listen(3000, () => {
 app.use(UserRouter_1.userRouter);
 app.use(PostRouter_1.postRouter);
 app.use(FollowRouter_1.followRouter);
+app.use(CommentRouter_1.commentRouter);
 //# sourceMappingURL=index.js.map

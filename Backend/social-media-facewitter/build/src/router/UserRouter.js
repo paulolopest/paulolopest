@@ -14,6 +14,7 @@ const express_1 = __importDefault(require("express"));
 const userBusiness = new UserBusiness_1.UserBusiness(new UserData_1.UserData(), new IdGenerator_1.IdGenerator(), new HashManager_1.HashManager(), new TokenManager_1.TokenManager());
 const userController = new UserController_1.UserController(userBusiness);
 exports.userRouter = express_1.default.Router();
+exports.userRouter.get("/profile", userController.getProfile);
 exports.userRouter.post("/signup", userController.signup);
 exports.userRouter.post("/login", userController.login);
 exports.userRouter.post("/logout", userController.logout);

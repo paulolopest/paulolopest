@@ -30,11 +30,11 @@ CREATE TABLE facewitter_posts (
 SELECT * FROM facewitter_posts;
 
 CREATE TABLE facewitter_comments (
+    id VARCHAR(255) PRIMARY KEY,
     post_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     content VARCHAR(255) NOT NULL,
-    likes INT,
-    PRIMARY KEY (post_id, user_id),
+    likes INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
     FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
 );
@@ -52,3 +52,5 @@ CREATE TABLE facewitter_blockList (
 DROP TABLE `facewitter_blockList`;
 
 SELECT * FROM `facewitter_blockList`;
+
+DESCRIBE facewitter_comments;

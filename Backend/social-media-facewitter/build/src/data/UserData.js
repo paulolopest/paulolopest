@@ -32,14 +32,12 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                 throw new Error(error.message);
             }
         });
-        this.logout = (userId, token) => __awaiter(this, void 0, void 0, function* () {
+        this.getProfile = (id) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.connection("facewitter_blockList")
-                    .insert({
-                    user_id: userId,
-                    expires_in: Date_1.createdDate,
-                    token
-                });
+                const response = yield this.connection(this.tableName)
+                    .select("id", "name", "nickname", "email", "birth_date")
+                    .where({ id: id });
+                return response[0];
             }
             catch (error) {
                 throw new Error(error.message);
@@ -108,6 +106,19 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                 yield this.connection(this.tableName)
                     .delete()
                     .where({ id: id });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.logout = (userId, token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection("facewitter_blockList")
+                    .insert({
+                    user_id: userId,
+                    expires_in: Date_1.createdDate,
+                    token
+                });
             }
             catch (error) {
                 throw new Error(error.message);
