@@ -18,6 +18,7 @@ export const userRouter: Router = express.Router()
 
 // Routes
 
+userRouter.get("/profile", userController.getProfile)
 userRouter.post("/signup", userController.signup)
 userRouter.post("/login", userController.login)
 userRouter.post("/logout", userController.logout)

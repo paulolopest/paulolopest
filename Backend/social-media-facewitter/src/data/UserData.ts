@@ -1,4 +1,4 @@
-import { createdDate, currentTime } from "../models/Date";
+import { createdDate } from "../models/Date";
 import { User } from "../models/User";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -22,19 +22,19 @@ export class UserData extends BaseDatabase {
         }
     }
 
-    logout = async (userId:string, token: string) => {
+    
+    getProfile = async (id: string) => {
         try {
-            await this.connection("facewitter_blockList")
-            .insert({
-                user_id: userId,
-                expires_in: createdDate,
-                token
-            })
+            const response = await this.connection(this.tableName)
+            .select("id", "name", "nickname", "email", "birth_date")
+            .where({id: id})
+
+            return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }
     }
-
+    
     editUser = async (userId: string, name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
         try {
             const response = await this.connection(this.tableName)
@@ -46,7 +46,7 @@ export class UserData extends BaseDatabase {
                 birthDate
             })
             .where({id: userId})
-
+            
         } catch (error:any) {
             throw new Error(error.message)
         }
@@ -62,18 +62,18 @@ export class UserData extends BaseDatabase {
             throw new Error(error.message)
         }
     }
-
+    
     getUserById = async (id: string) => {
         try {
             const response = await this.connection(this.tableName)
             .where({id: id})
-
+            
             return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }
     }
-
+    
     getUserByEmail = async(email: string) => {
         try {
             const response = await this.connection(this.tableName)
@@ -84,29 +84,48 @@ export class UserData extends BaseDatabase {
             throw new Error(error.message)
         }
     }
-
+    
     getUserByNick = async(nickname: string) => {
         try {
             const response = await this.connection(this.tableName)
             .where({nickname: nickname})
-
+            
             return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }
     }
-
+    
     deleteUser = async (id: string) => {
         try {
-            await this.connection("facewitter_follows")
+            await this.connection("facewitter_shares")
+            .delete()
             .where({user_id: id})
 
+            await this.connection("facewitter_follows")
+            .delete()
+            .where({user_id: id})
+            
             await this.connection(this.tableName)
             .delete()
             .where({id: id})
-
+            
         } catch (error:any) {
             throw new Error(error.message)
         }
     }
+
+    logout = async (userId:string, token: string) => {
+        try {
+            await this.connection("facewitter_blockList")
+            .insert({
+                user_id: userId,
+                expires_in: createdDate,
+                token
+            })
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
 }

@@ -15,7 +15,7 @@ const postController = new PostController_1.PostController(postBusiness);
 exports.postRouter = express_1.default.Router();
 exports.postRouter.post("/:postId/like", postController.likePost);
 exports.postRouter.get("/profile/posts", postController.getMyPosts);
-exports.postRouter.post("/:userId/create-post", postController.create);
+exports.postRouter.post("/create-post", postController.create);
 exports.postRouter.put("/:postId/edit", postController.editPost);
 exports.postRouter.delete("/:postId/delete", postController.deletePost);
 //# sourceMappingURL=PostRouter.js.map

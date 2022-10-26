@@ -3,8 +3,8 @@ import { TokenManager } from "../services/TokenManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { CustomError } from "../models/CustomError";
 import { createdDate } from "../models/Date";
+import { Like, Post } from "../models/Post";
 import { PostData } from "../data/PostData";
-import { Post } from "../models/Post";
 
 export class PostBusiness {
     constructor(
@@ -120,18 +120,78 @@ export class PostBusiness {
             if(!postId) {
                 throw new CustomError(400, "Enter a post id")
             }
-
+            
             const post = await this.postData.getPostById(postId)
             if(!post) {
                 throw new CustomError(400, "Post not exist")
             }
+            
+            const user = this.tokenManager.getTokenData(token)
 
-            await this.postData.likePost(postId)
+            const verify: boolean = await this.postData.searchLike(user.id, postId)
+            if(verify) {
+                throw new CustomError(400, "Post already liked")
+            }
+
+            await this.postData.likePost(
+                new Like (
+                    user.id,
+                    postId
+                )
+            )
 
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }
     }
 
-    
+    dislikePost = async (token: string, postId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!postId) {
+                throw new CustomError(400, "Enter a post id")
+            }
+
+            const post = await this.postData.getPostById(postId)
+            if(!post) {
+                throw new CustomError(400, "Post not exist")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+
+            const verify: boolean = await this.postData.searchLike(user.id, postId)
+            if(!verify) {
+                throw new CustomError(400, "Post not liked")
+            }
+            
+            await this.postData.dislikePost(postId, user.id)
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    getPostLikes = async (token: string, postId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!postId) {
+                throw new CustomError(400, "Enter a post id")
+            }
+
+            const post = await this.postData.getPostById(postId)
+            if(!post) {
+                throw new CustomError(400, "Post not exist")
+            }
+
+            const response = await this.postData.getPostLikes(postId)
+            
+            return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
 }

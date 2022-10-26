@@ -118,6 +118,27 @@ export class UserBusiness {
         }
     }
 
+    getProfile = async (token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login First")
+            }
+            
+            const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            const verify: Boolean = await this.userData.getUserById(user.id)
+            if(!verify) {
+                throw new CustomError(400, "User not found")
+            }
+
+            const response = await this.userData.getProfile(user.id)
+
+            return response
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
     editUser = async (token: string, name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
         try {
             if(!token) {
@@ -172,10 +193,10 @@ export class UserBusiness {
                 throw new CustomError(401, "Login first")
             }
             
-            const verifyToken: any[] = await this.tokenManager.verifyToken(token)
-            if(verifyToken) {
-                throw new CustomError(401, "Invalid Token")
-            }
+            // const verifyToken: boolean = await this.tokenManager.verifyToken(token)
+            // if(verifyToken === true) {
+            //     throw new CustomError(401, "Invalid Token")
+            // }
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             await this.userData.deleteUser(user.id)

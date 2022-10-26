@@ -26,6 +26,17 @@ export class UserController {
         }
     }
 
+    getProfile = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const response = await this.userBusiness.getProfile(token)
+
+            res.status(200).send(response)
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
     logout = async (req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string

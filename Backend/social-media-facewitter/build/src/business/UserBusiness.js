@@ -106,6 +106,23 @@ class UserBusiness {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
+        this.getProfile = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login First");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const verify = yield this.userData.getUserById(user.id);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(400, "User not found");
+                }
+                const response = yield this.userData.getProfile(user.id);
+                return response;
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
         this.editUser = (token, name, nickname, email, password, birthDate) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
