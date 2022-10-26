@@ -2,8 +2,9 @@ import { TokenManager } from "../services/TokenManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { CustomError } from "../models/CustomError";
 import { CommentData } from "../data/CommentData";
-import { Comment } from "../models/Comments";
+import { Comment, LikePost } from "../models/Comments";
 import { PostData } from "../data/PostData";
+import { createdDate, test, today } from "../models/Date";
 
 export class CommentBusiness {
     constructor (
@@ -42,7 +43,8 @@ export class CommentBusiness {
                     id,
                     user.id,
                     postId,
-                    content
+                    content,
+                    test.toString()
                 )
             )
 
@@ -109,7 +111,7 @@ export class CommentBusiness {
     delete = async(token: string, commentId: string) => {
         try {
             if(!token) {
-                throw new CustomError(401, "Login First")
+                throw new CustomError(401, "Login first")
             }
             if(!commentId) {
                 throw new CustomError(400, "Comment not found")
@@ -133,13 +135,18 @@ export class CommentBusiness {
         }
     }
 
-    like = async (token: string, commentId: string) => {
+    likePost = async (token: string, commentId: string) => {
         try {
             if(!token) {
-                throw new CustomError(401, "Login First")
+                throw new CustomError(401, "Login first")
             }
             if(!commentId) {
-                throw new CustomError(400, "Comment not found")
+                throw new CustomError(400, "Enter a comment id")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
             }
 
             const comment = await this.commentData.getCommentById(commentId)
@@ -147,17 +154,58 @@ export class CommentBusiness {
                 throw new CustomError(400, "Comment not found")
             }
 
-            await this.commentData.like(commentId)
-            
+            const verify: boolean = await this.commentData.searchLike(user.id, commentId)
+            if(verify) {
+                throw new CustomError(400, "Comment already liked")
+            }
+
+            await this.commentData.likePost(
+                new LikePost (
+                    user.id,
+                    commentId
+                )
+            )
+
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }
     }
 
-    dislike = async (token: string, commentId: string) => {
+    dislikePost = async (token: string, commentId: string) => {
         try {
             if(!token) {
-                throw new CustomError(401, "Login First")
+                throw new CustomError(401, "Login first")
+            }
+            if(!commentId) {
+                throw new CustomError(400, "Enter a comment id")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
+            }
+
+            const comment = await this.commentData.getCommentById(commentId)
+            if(!comment) {
+                throw new CustomError(400, "Comment not found")
+            }
+
+            const verify: boolean = await this.commentData.searchLike(user.id, commentId)
+            if(!verify) {
+                throw new CustomError(400, "Comment not liked")
+            }
+
+            await this.commentData.dislikePost(user.id, commentId)
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    getCommentLike = async (token:string, commentId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
             }
             if(!commentId) {
                 throw new CustomError(400, "Enter a comment id")
@@ -168,7 +216,9 @@ export class CommentBusiness {
                 throw new CustomError(400, "Comment not found")
             }
 
-            await this.commentData.dislike(commentId)
+            const response = await this.commentData.getCommentLike(commentId)
+
+            return response
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }

@@ -4,7 +4,7 @@ export class Comment {
         private userId: string,
         private postId: string,
         private content: string,
-        private likes?: string
+        private createdAt: string
     ) {}
 
     public getId (): string {
@@ -19,7 +19,21 @@ export class Comment {
     public getContent (): string {
         return this.content
     }
-    public getLikes (): string | undefined{
-        return this.likes
+    public getDate (): string {
+        return this.createdAt
+    }
+}
+
+export class LikePost {
+    constructor (
+        private userId: string,
+        private commentId: string
+    ) {}
+
+    public getUserId(): string {
+        return this.userId
+    }
+    public getCommentId(): string {
+        return this.commentId
     }
 }

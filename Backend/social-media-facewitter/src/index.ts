@@ -24,3 +24,11 @@ app.use(userRouter)
 app.use(postRouter)
 app.use(followRouter)
 app.use(commentRouter)
+
+// Fazer as reações em cadeia
+// logica de compartilhar
+// mexer na logica do refresh token, mudar pra allowlist
+// ver o video do dechamps
+// tentar testar a api sem mock
+// testes
+// melhorar o sistema de datas

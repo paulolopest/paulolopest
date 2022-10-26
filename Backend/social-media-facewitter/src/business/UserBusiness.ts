@@ -193,10 +193,10 @@ export class UserBusiness {
                 throw new CustomError(401, "Login first")
             }
             
-            const verifyToken: any[] = await this.tokenManager.verifyToken(token)
-            if(verifyToken) {
-                throw new CustomError(401, "Invalid Token")
-            }
+            // const verifyToken: boolean = await this.tokenManager.verifyToken(token)
+            // if(verifyToken === true) {
+            //     throw new CustomError(401, "Invalid Token")
+            // }
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             await this.userData.deleteUser(user.id)

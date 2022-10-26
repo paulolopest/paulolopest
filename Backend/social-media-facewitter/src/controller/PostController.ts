@@ -57,9 +57,34 @@ export class PostController {
         try {
             const token = req.headers.authorization as string
             const {postId} = req.params
-            const response = await this.postBusiness.likePost(token, postId)
+            
+            await this.postBusiness.likePost(token, postId)
 
             res.send("Post liked")
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    dislikePost = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {postId} = req.params
+            await this.postBusiness.dislikePost(token, postId)
+
+            res.send("Post disliked")
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    getPostLikes = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {postId} = req.params
+            const response = await this.postBusiness.getPostLikes(token, postId)
+
+            res.send(response)
         } catch (error:any) {
             res.status(404).send(error.sqlMessage || error.message)
         }

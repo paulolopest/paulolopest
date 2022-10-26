@@ -10,6 +10,7 @@ export const verifyDate = async(validationDate:Date):Promise <boolean> => {
     return verify
 }
 
-const today = new Date()
+export const today = new Date()
 export const currentTime = today.getTime()
 export const createdDate = new Date(currentTime)
+export const test = new Date().toUTCString()

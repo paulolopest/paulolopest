@@ -1,6 +1,6 @@
 import { CustomError } from "../models/CustomError";
 import { BaseDatabase } from "./BaseDatabase";
-import { Comment } from "../models/Comments";
+import { Comment, LikePost } from "../models/Comments";
 
 export class CommentData extends BaseDatabase {
     private tableName = "facewitter_comments"
@@ -13,7 +13,7 @@ export class CommentData extends BaseDatabase {
                 post_id: comment.getPostId(),
                 user_id: comment.getUserId(),
                 content: comment.getContent(),
-                likes: comment.getLikes() 
+                created_at: comment.getDate()
             })
         } catch (error:any) {
             throw new CustomError(404, error.message)
@@ -56,23 +56,37 @@ export class CommentData extends BaseDatabase {
         }
     }
 
-    like = async (id: string) => {
+    likePost = async (like: LikePost) => {
         try {
-            await this.connection(this.tableName)
-            .update({likes: +1})
-            .where({id: id})
+            await this.connection("facewitter_comments_likes")
+            .insert ({
+                user_id: like.getUserId(),
+                comment_id: like.getCommentId()
+            })
 
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }
     }
 
-    dislike = async (id: string) => {
+    dislikePost = async (userId: string, commentId: string) => {
         try {
-            await this.connection(this.tableName)
-            .update({likes: -1})
-            .where({id: id})
+            await this.connection("facewitter_comments_likes")
+            .delete()
+            .where({user_id: userId})
+            .andWhere({comment_id: commentId})
 
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    getCommentLike = async (id: string) => {
+        try {
+            const response = await this.connection("facewitter_comments_likes")
+            .where({comment_id: id})
+
+            return response
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }
@@ -98,6 +112,18 @@ export class CommentData extends BaseDatabase {
             return response[0]
         } catch (error:any) {
             throw new CustomError(404, error.message)
+        }
+    }
+
+    searchLike = async (userId: string, commentId: string) => {
+        try {
+            const response = await this.connection("facewitter_comments_likes")
+            .where({user_id: userId})
+            .andWhere({comment_id: commentId})
+
+            return response[0]
+        } catch (error:any) {
+            throw new Error(error.message)
         }
     }
 

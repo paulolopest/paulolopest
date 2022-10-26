@@ -16,9 +16,10 @@ const commentController: CommentController = new CommentController(commentBusine
 
 export const commentRouter: Router = express.Router()
 
-commentRouter.delete("/:commentId/delete-comment", commentController.delete)
+commentRouter.get("/:commentId/get-likes-comment", commentController.getCommentLike)
 commentRouter.get("/:postId/get-comment", commentController.getComments)
-commentRouter.put("/:commentId/edit-comment", commentController.edit)
+commentRouter.delete("/:commentId/test", commentController.dislikePost)
+commentRouter.delete("/:commentId/delete-comment", commentController.delete)
+commentRouter.post("/:commentId/like-comment", commentController.likeComment)
 commentRouter.post("/:postId/comment", commentController.comment)
-commentRouter.put("/:commentId/like", commentController.like)
-commentRouter.put("/:commentId/dislike", commentController.dislike)
+commentRouter.put("/:commentId/edit-comment", commentController.edit)

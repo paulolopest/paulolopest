@@ -1,4 +1,4 @@
-import { createdDate, currentTime } from "../models/Date";
+import { createdDate } from "../models/Date";
 import { User } from "../models/User";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -98,7 +98,12 @@ export class UserData extends BaseDatabase {
     
     deleteUser = async (id: string) => {
         try {
+            await this.connection("facewitter_shares")
+            .delete()
+            .where({user_id: id})
+
             await this.connection("facewitter_follows")
+            .delete()
             .where({user_id: id})
             
             await this.connection(this.tableName)

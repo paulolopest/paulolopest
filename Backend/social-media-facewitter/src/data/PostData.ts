@@ -1,5 +1,5 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { Post } from "../models/Post";
+import { Like, Post } from "../models/Post";
 
 export class PostData extends BaseDatabase {
     private tableName = "facewitter_posts"
@@ -67,12 +67,49 @@ export class PostData extends BaseDatabase {
         }
     }
 
-    likePost = async(postId: string) => {
+    likePost = async(like: Like) => {
         try {
-            await this.connection(this.tableName)
-            .update({likes: +1})
-            .where({id: postId})
+            await this.connection("facewitter_likes")
+            .insert({
+                user_id: like.getUserId(),
+                post_id: like.getPostId()
+            })
 
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    dislikePost = async (postId: string, userId: string) => {
+        try {
+            await this.connection("facewitter_likes")
+            .delete()
+            .where({post_id: postId})
+            .andWhere({user_id: userId})
+
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    getPostLikes = async (postId: string) => {
+        try {
+            const response = await this.connection("facewitter_likes")
+            .where({post_id: postId})
+
+            return response
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    searchLike = async (userId: string, postId: string) => {
+        try {
+            const response = await this.connection("facewitter_likes")
+            .where({user_id: userId})
+            .andWhere({post_id: postId})
+
+            return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }

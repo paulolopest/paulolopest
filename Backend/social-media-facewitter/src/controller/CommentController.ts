@@ -57,12 +57,12 @@ export class CommentController {
         }
     }
 
-    like = async (req: Request, res: Response) => {
+    likeComment = async (req:Request, res: Response) => {
         try {
             const token = req.headers.authorization as string
             const {commentId} = req.params
 
-            await this.commentBusiness.like(token, commentId)
+            await this.commentBusiness.likePost(token, commentId)
 
             res.status(200).send("Comment liked")
         } catch (error:any) {
@@ -70,14 +70,27 @@ export class CommentController {
         }
     }
 
-    dislike = async (req: Request, res: Response) => {
+    dislikePost = async (req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string
             const {commentId} = req.params
 
-            await this.commentBusiness.dislike(token, commentId)
+            await this.commentBusiness.dislikePost(token, commentId)
 
-            res.status(200).send("Disliked comment")
+            res.status(200).send("Comment disliked")
+        } catch (error:any) {
+            res.status(404).send(error.message)
+        }
+    }
+
+    getCommentLike = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {commentId} = req.params
+
+            const response = await this.commentBusiness.getCommentLike(token, commentId)
+
+            res.status(200).send(response)
         } catch (error:any) {
             res.status(404).send(error.message)
         }
