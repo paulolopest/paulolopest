@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostBusiness = void 0;
 const CustomError_1 = require("../models/CustomError");
-const Date_1 = require("../models/Date");
 const Post_1 = require("../models/Post");
+const Date_1 = require("../services/Date");
 class PostBusiness {
     constructor(postData, idGenerator, tokenManager) {
         this.postData = postData;
@@ -29,7 +29,7 @@ class PostBusiness {
                 const user = this.tokenManager.getTokenData(token);
                 const id = this.idGenerator.generate();
                 let likes = 0;
-                yield this.postData.create(new Post_1.Post(id, user.id, likes, Date_1.createdDate, image, content));
+                yield this.postData.create(new Post_1.Post(id, user.id, Date_1.currentTime, image, content));
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
@@ -42,6 +42,22 @@ class PostBusiness {
                 }
                 const user = this.tokenManager.getTokenData(token);
                 const response = yield this.postData.getMyPosts(user.id);
+                return response;
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getFeed = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                if (!user) {
+                    throw new CustomError_1.CustomError(404, "User fatal error");
+                }
+                const response = yield this.postData.getFeed(user.id);
                 return response;
             }
             catch (error) {
@@ -107,7 +123,54 @@ class PostBusiness {
                 if (!post) {
                     throw new CustomError_1.CustomError(400, "Post not exist");
                 }
-                yield this.postData.likePost(postId);
+                const user = this.tokenManager.getTokenData(token);
+                const verify = yield this.postData.searchLike(user.id, postId);
+                if (verify) {
+                    throw new CustomError_1.CustomError(400, "Post already liked");
+                }
+                yield this.postData.likePost(new Post_1.Like(user.id, postId));
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.dislikePost = (token, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!postId) {
+                    throw new CustomError_1.CustomError(400, "Enter a post id");
+                }
+                const post = yield this.postData.getPostById(postId);
+                if (!post) {
+                    throw new CustomError_1.CustomError(400, "Post not exist");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const verify = yield this.postData.searchLike(user.id, postId);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(400, "Post not liked");
+                }
+                yield this.postData.dislikePost(postId, user.id);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getPostLikes = (token, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!postId) {
+                    throw new CustomError_1.CustomError(400, "Enter a post id");
+                }
+                const post = yield this.postData.getPostById(postId);
+                if (!post) {
+                    throw new CustomError_1.CustomError(400, "Post not exist");
+                }
+                const response = yield this.postData.getPostLikes(postId);
+                return response;
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);

@@ -4,7 +4,7 @@ export class Comment {
         private userId: string,
         private postId: string,
         private content: string,
-        private createdAt: string
+        private createdAt: number
     ) {}
 
     public getId (): string {
@@ -19,7 +19,7 @@ export class Comment {
     public getContent (): string {
         return this.content
     }
-    public getDate (): string {
+    public getDate (): number {
         return this.createdAt
     }
 }

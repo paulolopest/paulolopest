@@ -17,10 +17,13 @@ export const postRouter: Router = express.Router()
 
 // Routes
 
+postRouter.delete("/:postId/delete-share", postController.deleteShare)
 postRouter.get("/:postId/get-likes", postController.getPostLikes)
 postRouter.delete("/:postId/dislike", postController.dislikePost)
 postRouter.delete("/:postId/delete", postController.deletePost)
 postRouter.get("/profile/posts", postController.getMyPosts)
+postRouter.post("/:postId/share", postController.sharePost)
 postRouter.post("/:postId/like", postController.likePost)
 postRouter.put("/:postId/edit", postController.editPost)
 postRouter.post("/create-post", postController.create)
+postRouter.get("/myFeed", postController.getFeed)

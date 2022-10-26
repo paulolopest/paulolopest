@@ -1,18 +1,18 @@
 import { BaseDatabase } from "./BaseDatabase";
 import { Like, Post } from "../models/Post";
+import { currentTime } from "../services/Date";
 
 export class PostData extends BaseDatabase {
     private tableName = "facewitter_posts"
 
     create = async (post: Post) => {
         try {
-            const response = await this.connection(this.tableName)
+            await this.connection(this.tableName)
             .insert({
                 id: post.getId(),
                 user_id: post.getUserId(),
                 image: post.getImage(),
                 content: post.getContent(),
-                likes: post.getLikes(),
                 created_at: post.getDate()
             })
             
@@ -28,6 +28,21 @@ export class PostData extends BaseDatabase {
             .orderBy("created_at", "desc")
 
             return response
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    getFeed = async (id: string) => {
+        try {
+            const response = await this.connection.raw (
+                `SELECT * FROM facewitter_posts as post
+                JOIN facewitter_follows as follow
+                WHERE post.user_id = follow.followed_id
+                and follow.user_id = "${id}"`
+            )
+
+            return response[0]
         } catch (error:any) {
             throw new Error(error.message)
         }
@@ -57,6 +72,14 @@ export class PostData extends BaseDatabase {
 
     deletePost = async (postId: string, userId: string) => {
         try {
+            await this.connection("facewitter_comments")
+            .delete()
+            .where({post_id: postId})
+
+            await this.connection("facewitter_posts_likes")
+            .delete()
+            .where({post_id: postId})
+
             await this.connection(this.tableName)
             .delete()
             .where({id: postId})
@@ -69,7 +92,7 @@ export class PostData extends BaseDatabase {
 
     likePost = async(like: Like) => {
         try {
-            await this.connection("facewitter_likes")
+            await this.connection("facewitter_posts_likes")
             .insert({
                 user_id: like.getUserId(),
                 post_id: like.getPostId()
@@ -82,7 +105,7 @@ export class PostData extends BaseDatabase {
 
     dislikePost = async (postId: string, userId: string) => {
         try {
-            await this.connection("facewitter_likes")
+            await this.connection("facewitter_posts_likes")
             .delete()
             .where({post_id: postId})
             .andWhere({user_id: userId})
@@ -92,9 +115,46 @@ export class PostData extends BaseDatabase {
         }
     }
 
+    sharePost = async(userId: string, postId: string) => {
+        try {
+            await this.connection("facewitter_shares")
+            .insert({
+                user_id: userId,
+                post_id: postId,
+                created_at: currentTime
+            })
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    getSharePost = async (userId: string, postId: string) => {
+        try {
+            const response = await this.connection("facewitter_shares")
+            .where({user_id: userId})
+            .andWhere({post_id: postId})
+
+            return response[0]
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
+    deleteShare = async (userId: string, postId: string) => {
+        try {
+            await this.connection("facewitter_shares")
+            .delete()
+            .where({user_id: userId})
+            .andWhere({post_id: postId})
+
+        } catch (error:any) {
+            throw new Error(error.message)
+        }
+    }
+
     getPostLikes = async (postId: string) => {
         try {
-            const response = await this.connection("facewitter_likes")
+            const response = await this.connection("facewitter_posts_likes")
             .where({post_id: postId})
 
             return response
@@ -105,7 +165,7 @@ export class PostData extends BaseDatabase {
 
     searchLike = async (userId: string, postId: string) => {
         try {
-            const response = await this.connection("facewitter_likes")
+            const response = await this.connection("facewitter_posts_likes")
             .where({user_id: userId})
             .andWhere({post_id: postId})
 

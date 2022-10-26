@@ -193,11 +193,12 @@ export class UserBusiness {
                 throw new CustomError(401, "Login first")
             }
             
-            // const verifyToken: boolean = await this.tokenManager.verifyToken(token)
-            // if(verifyToken === true) {
-            //     throw new CustomError(401, "Invalid Token")
-            // }
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            
+            const verify = await this.userData.getUserById(user.id)
+            if(!verify) {
+                throw new CustomError(400, "User not exist")
+            }
 
             await this.userData.deleteUser(user.id)
             

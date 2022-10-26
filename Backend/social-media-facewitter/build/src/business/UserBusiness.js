@@ -170,11 +170,11 @@ class UserBusiness {
                 if (!token) {
                     throw new CustomError_1.CustomError(401, "Login first");
                 }
-                const verifyToken = yield this.tokenManager.verifyToken(token);
-                if (verifyToken) {
-                    throw new CustomError_1.CustomError(401, "Invalid Token");
-                }
                 const user = this.tokenManager.getTokenData(token);
+                const verify = yield this.userData.getUserById(user.id);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(400, "User not exist");
+                }
                 yield this.userData.deleteUser(user.id);
             }
             catch (error) {

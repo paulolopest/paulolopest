@@ -13,9 +13,12 @@ const express_1 = __importDefault(require("express"));
 const postBusiness = new PostBusiness_1.PostBusiness(new PostData_1.PostData(), new IdGenerator_1.IdGenerator(), new TokenManager_1.TokenManager());
 const postController = new PostController_1.PostController(postBusiness);
 exports.postRouter = express_1.default.Router();
-exports.postRouter.post("/:postId/like", postController.likePost);
-exports.postRouter.get("/profile/posts", postController.getMyPosts);
-exports.postRouter.post("/create-post", postController.create);
-exports.postRouter.put("/:postId/edit", postController.editPost);
+exports.postRouter.get("/:postId/get-likes", postController.getPostLikes);
+exports.postRouter.delete("/:postId/dislike", postController.dislikePost);
 exports.postRouter.delete("/:postId/delete", postController.deletePost);
+exports.postRouter.get("/profile/posts", postController.getMyPosts);
+exports.postRouter.post("/:postId/like", postController.likePost);
+exports.postRouter.put("/:postId/edit", postController.editPost);
+exports.postRouter.post("/create-post", postController.create);
+exports.postRouter.get("/myFeed", postController.getFeed);
 //# sourceMappingURL=PostRouter.js.map

@@ -14,10 +14,11 @@ const express_1 = __importDefault(require("express"));
 const commentBusiness = new CommentBusiness_1.CommentBusiness(new TokenManager_1.TokenManager(), new IdGenerator_1.IdGenerator(), new CommentData_1.CommentData(), new PostData_1.PostData());
 const commentController = new CommentController_1.CommentController(commentBusiness);
 exports.commentRouter = express_1.default.Router();
-exports.commentRouter.delete("/:commentId/delete-comment", commentController.delete);
+exports.commentRouter.get("/:commentId/get-likes-comment", commentController.getCommentLike);
 exports.commentRouter.get("/:postId/get-comment", commentController.getComments);
-exports.commentRouter.put("/:commentId/edit-comment", commentController.edit);
+exports.commentRouter.delete("/:commentId/test", commentController.dislikePost);
+exports.commentRouter.delete("/:commentId/delete-comment", commentController.delete);
+exports.commentRouter.post("/:commentId/like-comment", commentController.likeComment);
 exports.commentRouter.post("/:postId/comment", commentController.comment);
-exports.commentRouter.put("/:commentId/like", commentController.like);
-exports.commentRouter.put("/:commentId/dislike", commentController.dislike);
+exports.commentRouter.put("/:commentId/edit-comment", commentController.edit);
 //# sourceMappingURL=CommentRouter.js.map

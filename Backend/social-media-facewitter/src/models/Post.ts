@@ -2,8 +2,7 @@ export class Post {
     constructor(
         private id: string,
         private user_id: string,
-        private likes: number,
-        private created_at: Date | string,
+        private created_at: Date | number,
         private image?: Blob,
         private content?: string
     ) {}
@@ -14,10 +13,7 @@ export class Post {
     public getUserId(): string {
         return this.user_id
     }
-    public getLikes(): number {
-        return this.likes
-    }
-    public getDate(): Date | string{
+    public getDate(): Date | number{
         return this.created_at
     }
     public getImage(): Blob | undefined {

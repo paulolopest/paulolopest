@@ -17,13 +17,12 @@ class PostData extends BaseDatabase_1.BaseDatabase {
         this.tableName = "facewitter_posts";
         this.create = (post) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield this.connection(this.tableName)
+                yield this.connection(this.tableName)
                     .insert({
                     id: post.getId(),
                     user_id: post.getUserId(),
                     image: post.getImage(),
                     content: post.getContent(),
-                    likes: post.getLikes(),
                     created_at: post.getDate()
                 });
             }
@@ -37,6 +36,18 @@ class PostData extends BaseDatabase_1.BaseDatabase {
                     .where({ user_id: id })
                     .orderBy("created_at", "desc");
                 return response;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getFeed = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection.raw(`SELECT * FROM facewitter_posts as post
+                JOIN facewitter_follows as follow
+                WHERE post.user_id = follow.followed_id
+                and follow.user_id = "${id}"`);
+                return response[0];
             }
             catch (error) {
                 throw new Error(error.message);
@@ -64,6 +75,12 @@ class PostData extends BaseDatabase_1.BaseDatabase {
         });
         this.deletePost = (postId, userId) => __awaiter(this, void 0, void 0, function* () {
             try {
+                yield this.connection("facewitter_comments")
+                    .delete()
+                    .where({ post_id: postId });
+                yield this.connection("facewitter_post_likes")
+                    .delete()
+                    .where({ post_id: postId });
                 yield this.connection(this.tableName)
                     .delete()
                     .where({ id: postId })
@@ -73,11 +90,45 @@ class PostData extends BaseDatabase_1.BaseDatabase {
                 throw new Error(error.message);
             }
         });
-        this.likePost = (postId) => __awaiter(this, void 0, void 0, function* () {
+        this.likePost = (like) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.connection(this.tableName)
-                    .update({ likes: +1 })
-                    .where({ id: postId });
+                yield this.connection("facewitter_posts_likes")
+                    .insert({
+                    user_id: like.getUserId(),
+                    post_id: like.getPostId()
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.dislikePost = (postId, userId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection("facewitter_posts_likes")
+                    .delete()
+                    .where({ post_id: postId })
+                    .andWhere({ user_id: userId });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getPostLikes = (postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection("facewitter_posts_likes")
+                    .where({ post_id: postId });
+                return response;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.searchLike = (userId, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection("facewitter_posts_likes")
+                    .where({ user_id: userId })
+                    .andWhere({ post_id: postId });
+                return response[0];
             }
             catch (error) {
                 throw new Error(error.message);
