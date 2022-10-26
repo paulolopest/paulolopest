@@ -4,7 +4,7 @@ import { CustomError } from "../models/CustomError";
 import { CommentData } from "../data/CommentData";
 import { Comment, LikePost } from "../models/Comments";
 import { PostData } from "../data/PostData";
-import { createdDate, test, today } from "../models/Date";
+import { currentTime } from "../services/Date";
 
 export class CommentBusiness {
     constructor (
@@ -44,7 +44,7 @@ export class CommentBusiness {
                     user.id,
                     postId,
                     content,
-                    test.toString()
+                    currentTime
                 )
             )
 

@@ -59,23 +59,34 @@ class CommentController {
                 res.status(404).send(error.message);
             }
         });
-        this.like = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.likeComment = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
                 const { commentId } = req.params;
-                yield this.commentBusiness.like(token, commentId);
+                yield this.commentBusiness.likePost(token, commentId);
                 res.status(200).send("Comment liked");
             }
             catch (error) {
                 res.status(404).send(error.message);
             }
         });
-        this.dislike = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.dislikePost = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
                 const { commentId } = req.params;
-                yield this.commentBusiness.dislike(token, commentId);
-                res.status(200).send("Disliked comment");
+                yield this.commentBusiness.dislikePost(token, commentId);
+                res.status(200).send("Comment disliked");
+            }
+            catch (error) {
+                res.status(404).send(error.message);
+            }
+        });
+        this.getCommentLike = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { commentId } = req.params;
+                const response = yield this.commentBusiness.getCommentLike(token, commentId);
+                res.status(200).send(response);
             }
             catch (error) {
                 res.status(404).send(error.message);

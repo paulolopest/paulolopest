@@ -34,6 +34,16 @@ class PostController {
                 res.status(404).send(error.sqlMessage || error.message);
             }
         });
+        this.getFeed = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const response = yield this.postBusiness.getFeed(token);
+                res.status(200).send(response);
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
         this.editPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
@@ -61,8 +71,30 @@ class PostController {
             try {
                 const token = req.headers.authorization;
                 const { postId } = req.params;
-                const response = yield this.postBusiness.likePost(token, postId);
+                yield this.postBusiness.likePost(token, postId);
                 res.send("Post liked");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.dislikePost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { postId } = req.params;
+                yield this.postBusiness.dislikePost(token, postId);
+                res.send("Post disliked");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.getPostLikes = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { postId } = req.params;
+                const response = yield this.postBusiness.getPostLikes(token, postId);
+                res.send(response);
             }
             catch (error) {
                 res.status(404).send(error.sqlMessage || error.message);

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentBusiness = void 0;
 const CustomError_1 = require("../models/CustomError");
 const Comments_1 = require("../models/Comments");
+const Date_1 = require("../services/Date");
 class CommentBusiness {
     constructor(tokenManager, idGenerator, commentData, postData) {
         this.tokenManager = tokenManager;
@@ -38,7 +39,7 @@ class CommentBusiness {
                 if (!user) {
                     throw new CustomError_1.CustomError(400, "User not found");
                 }
-                yield this.commentData.comment(new Comments_1.Comment(id, user.id, postId, content));
+                yield this.commentData.comment(new Comments_1.Comment(id, user.id, postId, content, Date_1.currentTime));
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
@@ -93,7 +94,7 @@ class CommentBusiness {
         this.delete = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
-                    throw new CustomError_1.CustomError(401, "Login First");
+                    throw new CustomError_1.CustomError(401, "Login first");
                 }
                 if (!commentId) {
                     throw new CustomError_1.CustomError(400, "Comment not found");
@@ -113,28 +114,62 @@ class CommentBusiness {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
-        this.like = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
+        this.likePost = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
-                    throw new CustomError_1.CustomError(401, "Login First");
+                    throw new CustomError_1.CustomError(401, "Login first");
                 }
                 if (!commentId) {
-                    throw new CustomError_1.CustomError(400, "Comment not found");
+                    throw new CustomError_1.CustomError(400, "Enter a comment id");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                if (!user) {
+                    throw new CustomError_1.CustomError(404, "User fatal error");
                 }
                 const comment = yield this.commentData.getCommentById(commentId);
                 if (!comment) {
                     throw new CustomError_1.CustomError(400, "Comment not found");
                 }
-                yield this.commentData.like(commentId);
+                const verify = yield this.commentData.searchLike(user.id, commentId);
+                if (verify) {
+                    throw new CustomError_1.CustomError(400, "Comment already liked");
+                }
+                yield this.commentData.likePost(new Comments_1.LikePost(user.id, commentId));
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
-        this.dislike = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
+        this.dislikePost = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
-                    throw new CustomError_1.CustomError(401, "Login First");
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!commentId) {
+                    throw new CustomError_1.CustomError(400, "Enter a comment id");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                if (!user) {
+                    throw new CustomError_1.CustomError(404, "User fatal error");
+                }
+                const comment = yield this.commentData.getCommentById(commentId);
+                if (!comment) {
+                    throw new CustomError_1.CustomError(400, "Comment not found");
+                }
+                const verify = yield this.commentData.searchLike(user.id, commentId);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(400, "Comment not liked");
+                }
+                yield this.commentData.dislikePost(user.id, commentId);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getCommentLike = (token, commentId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
                 }
                 if (!commentId) {
                     throw new CustomError_1.CustomError(400, "Enter a comment id");
@@ -143,7 +178,8 @@ class CommentBusiness {
                 if (!comment) {
                     throw new CustomError_1.CustomError(400, "Comment not found");
                 }
-                yield this.commentData.dislike(commentId);
+                const response = yield this.commentData.getCommentLike(commentId);
+                return response;
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);

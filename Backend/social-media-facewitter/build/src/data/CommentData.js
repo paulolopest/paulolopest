@@ -24,7 +24,7 @@ class CommentData extends BaseDatabase_1.BaseDatabase {
                     post_id: comment.getPostId(),
                     user_id: comment.getUserId(),
                     content: comment.getContent(),
-                    likes: comment.getLikes()
+                    created_at: comment.getDate()
                 });
             }
             catch (error) {
@@ -64,21 +64,34 @@ class CommentData extends BaseDatabase_1.BaseDatabase {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
-        this.like = (id) => __awaiter(this, void 0, void 0, function* () {
+        this.likePost = (like) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.connection(this.tableName)
-                    .update({ likes: +1 })
-                    .where({ id: id });
+                yield this.connection("facewitter_comments_likes")
+                    .insert({
+                    user_id: like.getUserId(),
+                    comment_id: like.getCommentId()
+                });
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
-        this.dislike = (id) => __awaiter(this, void 0, void 0, function* () {
+        this.dislikePost = (userId, commentId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.connection(this.tableName)
-                    .update({ likes: -1 })
-                    .where({ id: id });
+                yield this.connection("facewitter_comments_likes")
+                    .delete()
+                    .where({ user_id: userId })
+                    .andWhere({ comment_id: commentId });
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.getCommentLike = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection("facewitter_comments_likes")
+                    .where({ comment_id: id });
+                return response;
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
@@ -103,6 +116,17 @@ class CommentData extends BaseDatabase_1.BaseDatabase {
             }
             catch (error) {
                 throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.searchLike = (userId, commentId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection("facewitter_comments_likes")
+                    .where({ user_id: userId })
+                    .andWhere({ comment_id: commentId });
+                return response[0];
+            }
+            catch (error) {
+                throw new Error(error.message);
             }
         });
     }

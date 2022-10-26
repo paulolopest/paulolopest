@@ -1,5 +1,5 @@
-import { createdDate } from "../models/Date";
 import { User } from "../models/User";
+import { currentTime } from "../services/Date";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserData extends BaseDatabase {
@@ -98,6 +98,14 @@ export class UserData extends BaseDatabase {
     
     deleteUser = async (id: string) => {
         try {
+            await this.connection("facewitter_posts")
+            .delete()
+            .where({user_id: id})
+            
+            await this.connection("facewitter_comments")
+            .delete()
+            .where({user_id: id})
+
             await this.connection("facewitter_shares")
             .delete()
             .where({user_id: id})
@@ -120,7 +128,7 @@ export class UserData extends BaseDatabase {
             await this.connection("facewitter_blockList")
             .insert({
                 user_id: userId,
-                expires_in: createdDate,
+                expires_in: currentTime,
                 token
             })
         } catch (error:any) {

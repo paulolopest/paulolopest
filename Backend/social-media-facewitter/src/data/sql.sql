@@ -25,12 +25,13 @@ CREATE TABLE facewitter_posts (
    user_id VARCHAR(255) NOT NULL,
    image BLOB,
    content VARCHAR(255),
-   likes INT DEFAULT 0,
    created_at VARCHAR(255) NOT NULL,
    FOREIGN KEY (user_id) REFERENCES facewitter_users(id)
 );
 
-ALTER TABLE facewitter_posts DROP COLUMN likes;
+ALTER TABLE facewitter_posts DROP COLUMN created_at;
+
+ALTER TABLE facewitter_posts ADD created_at BIGINT NOT NULL AFTER content;
 
 SELECT * FROM facewitter_posts;
 DESCRIBE facewitter_posts;
@@ -43,7 +44,6 @@ CREATE TABLE facewitter_comments (
     post_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
     content VARCHAR(255) NOT NULL,
-    likes INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
     FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
 );
@@ -54,7 +54,7 @@ DESCRIBE facewitter_comments;
 SELECT * FROM facewitter_comments;
 
 ALTER TABLE facewitter_comments DROP COLUMN created_at;
-ALTER TABLE facewitter_comments ADD created_at VARCHAR(255) NOT NULL AFTER content;
+ALTER TABLE facewitter_comments ADD created_at BIGINT NOT NULL AFTER content;
 
 -- ---------------------------------------------------------------------------------------
 
@@ -69,15 +69,15 @@ DROP TABLE `facewitter_blockList`;
 SELECT * FROM `facewitter_blockList`;
 
 --  --------------------------------------------------------------------------------------
-CREATE TABLE facewitter_likes (
+CREATE TABLE facewitter_posts_likes (
     user_id VARCHAR(255) NOT NULL,
     post_id VARCHAR(255) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
 );
 
-SELECT * FROM facewitter_likes;
+SELECT * FROM facewitter_posts_likes;
 
-DROP TABLE facewitter_likes;
+DROP TABLE facewitter_posts_likes;
 
 -- ----------------------------------------------------------------------------------------
 
@@ -90,3 +90,15 @@ CREATE TABLE facewitter_comments_likes (
 SELECT * FROM facewitter_comments_likes;
 
 DROP TABLE facewitter_comments_likes;
+
+-- ----------------------------------------------------------------------------------------
+CREATE TABLE facewitter_shares (
+    user_id VARCHAR(255) NOT NULL,
+    post_id VARCHAR(255) NOT NULL,
+    created_at BIGINT NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
+);
+
+DROP TABLE facewitter_shares;
+
+DESCRIBE facewitter_shares;

@@ -2,9 +2,9 @@ import { AuthenticationData } from "../models/AuthenticationData";
 import { TokenManager } from "../services/TokenManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { CustomError } from "../models/CustomError";
-import { createdDate } from "../models/Date";
 import { Like, Post } from "../models/Post";
 import { PostData } from "../data/PostData";
+import { currentTime } from "../services/Date";
 
 export class PostBusiness {
     constructor(
@@ -30,8 +30,7 @@ export class PostBusiness {
                 new Post(
                     id,
                     user.id,
-                    likes,
-                    createdDate,
+                    currentTime,
                     image,
                     content
                 )
@@ -50,6 +49,25 @@ export class PostBusiness {
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
 
             const response = await this.postData.getMyPosts(user.id)
+
+            return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    getFeed = async (token: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
+            }
+
+            const response = await this.postData.getFeed(user.id)
 
             return response
         } catch (error:any) {
@@ -190,6 +208,63 @@ export class PostBusiness {
             const response = await this.postData.getPostLikes(postId)
             
             return response
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+
+    sharePost = async (token: string, postId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!postId) {
+                throw new CustomError(400, "Enter a post id")
+            }
+
+            const post = await this.postData.getPostById(postId)
+            if(!post) {
+                throw new CustomError(400, "Post not exist")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
+            }
+
+            await this.postData.sharePost(user.id, postId)
+
+        } catch (error:any) {
+            throw new CustomError(404, error.message)
+        }
+    }
+    
+    deleteShare = async (token: string, postId: string) => {
+        try {
+            if(!token) {
+                throw new CustomError(401, "Login first")
+            }
+            if(!postId) {
+                throw new CustomError(400, "Enter a post id")
+            }
+
+            const post = await this.postData.getPostById(postId)
+            if(!post) {
+                throw new CustomError(400, "Post not exist")
+            }
+
+            const user = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
+            }
+
+            const verify: boolean = await this.postData.getSharePost(user.id, postId)
+            if(!verify) {
+                throw new CustomError(400, "Post is not yours")
+            }
+
+            await this.postData.deleteShare(user.id, postId)
+            
         } catch (error:any) {
             throw new CustomError(404, error.message)
         }

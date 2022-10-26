@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserData = void 0;
-const Date_1 = require("../models/Date");
+const Date_1 = require("../services/Date");
 const BaseDatabase_1 = require("./BaseDatabase");
 class UserData extends BaseDatabase_1.BaseDatabase {
     constructor() {
@@ -101,7 +101,17 @@ class UserData extends BaseDatabase_1.BaseDatabase {
         });
         this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
             try {
+                yield this.connection("facewitter_posts")
+                    .delete()
+                    .where({ user_id: id });
+                yield this.connection("facewitter_comments")
+                    .delete()
+                    .where({ user_id: id });
+                yield this.connection("facewitter_shares")
+                    .delete()
+                    .where({ user_id: id });
                 yield this.connection("facewitter_follows")
+                    .delete()
                     .where({ user_id: id });
                 yield this.connection(this.tableName)
                     .delete()
@@ -116,7 +126,7 @@ class UserData extends BaseDatabase_1.BaseDatabase {
                 yield this.connection("facewitter_blockList")
                     .insert({
                     user_id: userId,
-                    expires_in: Date_1.createdDate,
+                    expires_in: Date_1.currentTime,
                     token
                 });
             }

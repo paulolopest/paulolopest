@@ -46,6 +46,10 @@ export class CommentData extends BaseDatabase {
     
     delete = async (userId: string, commentId: string) => {
         try {
+            await this.connection("facewitter_comments_likes")
+            .delete()
+            .where({comment_id: commentId})
+
             await this.connection(this.tableName)
             .delete()
             .where({id: commentId})

@@ -27,6 +27,17 @@ export class PostController {
         }
     }
 
+    getFeed = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const response = await this.postBusiness.getFeed(token)
+
+            res.status(200).send(response)
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
     editPost = async(req: Request, res: Response) => {
         try {
             const token = req.headers.authorization as string
@@ -85,6 +96,32 @@ export class PostController {
             const response = await this.postBusiness.getPostLikes(token, postId)
 
             res.send(response)
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    sharePost = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {postId} = req.params
+
+            await this.postBusiness.sharePost(token, postId)
+
+            res.status(200).send("Shared post")
+        } catch (error:any) {
+            res.status(404).send(error.sqlMessage || error.message)
+        }
+    }
+
+    deleteShare = async (req: Request, res: Response) => {
+        try {
+            const token = req.headers.authorization as string
+            const {postId} = req.params
+            
+            await this.postBusiness.deleteShare(token, postId)
+
+            res.status(200).send("Share deleted")
         } catch (error:any) {
             res.status(404).send(error.sqlMessage || error.message)
         }

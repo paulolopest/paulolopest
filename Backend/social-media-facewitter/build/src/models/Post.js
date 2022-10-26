@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Post = void 0;
+exports.Like = exports.Post = void 0;
 class Post {
-    constructor(id, user_id, likes, created_at, image, content) {
+    constructor(id, user_id, created_at, image, content) {
         this.id = id;
         this.user_id = user_id;
-        this.likes = likes;
         this.created_at = created_at;
         this.image = image;
         this.content = content;
@@ -15,9 +14,6 @@ class Post {
     }
     getUserId() {
         return this.user_id;
-    }
-    getLikes() {
-        return this.likes;
     }
     getDate() {
         return this.created_at;
@@ -30,4 +26,17 @@ class Post {
     }
 }
 exports.Post = Post;
+class Like {
+    constructor(userId, postId) {
+        this.userId = userId;
+        this.postId = postId;
+    }
+    getUserId() {
+        return this.userId;
+    }
+    getPostId() {
+        return this.postId;
+    }
+}
+exports.Like = Like;
 //# sourceMappingURL=Post.js.map
