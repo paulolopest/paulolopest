@@ -18,7 +18,7 @@ exports.userRouter.get("/profile", userController.getProfile);
 exports.userRouter.post("/signup", userController.signup);
 exports.userRouter.post("/login", userController.login);
 exports.userRouter.post("/logout", userController.logout);
-exports.userRouter.put("/:user-id/edit", userController.editUser);
-exports.userRouter.put("/user-id/edit-password", userController.editPassword);
+exports.userRouter.put("/user/edit", userController.editUser);
+exports.userRouter.put("/profile/edit-password", userController.editPassword);
 exports.userRouter.delete("/user/delete", userController.deleteUser);
 //# sourceMappingURL=UserRouter.js.map

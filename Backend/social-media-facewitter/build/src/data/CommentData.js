@@ -55,6 +55,9 @@ class CommentData extends BaseDatabase_1.BaseDatabase {
         });
         this.delete = (userId, commentId) => __awaiter(this, void 0, void 0, function* () {
             try {
+                yield this.connection("facewitter_comments_likes")
+                    .delete()
+                    .where({ comment_id: commentId });
                 yield this.connection(this.tableName)
                     .delete()
                     .where({ id: commentId })

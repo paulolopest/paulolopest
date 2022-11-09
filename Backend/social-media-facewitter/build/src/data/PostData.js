@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostData = void 0;
 const BaseDatabase_1 = require("./BaseDatabase");
+const Date_1 = require("../services/Date");
 class PostData extends BaseDatabase_1.BaseDatabase {
     constructor() {
         super(...arguments);
@@ -78,7 +79,7 @@ class PostData extends BaseDatabase_1.BaseDatabase {
                 yield this.connection("facewitter_comments")
                     .delete()
                     .where({ post_id: postId });
-                yield this.connection("facewitter_post_likes")
+                yield this.connection("facewitter_posts_likes")
                     .delete()
                     .where({ post_id: postId });
                 yield this.connection(this.tableName)
@@ -108,6 +109,41 @@ class PostData extends BaseDatabase_1.BaseDatabase {
                     .delete()
                     .where({ post_id: postId })
                     .andWhere({ user_id: userId });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.sharePost = (userId, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection("facewitter_shares")
+                    .insert({
+                    user_id: userId,
+                    post_id: postId,
+                    created_at: Date_1.currentTime
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getSharePost = (userId, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield this.connection("facewitter_shares")
+                    .where({ user_id: userId })
+                    .andWhere({ post_id: postId });
+                return response[0];
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.deleteShare = (userId, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.connection("facewitter_shares")
+                    .delete()
+                    .where({ user_id: userId })
+                    .andWhere({ post_id: postId });
             }
             catch (error) {
                 throw new Error(error.message);
