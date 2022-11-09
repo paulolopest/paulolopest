@@ -12,8 +12,7 @@ DROP TABLE facewitter_follows;
 CREATE TABLE facewitter_follows (
     user_id VARCHAR(255) NOT NULL,
     followed_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
-    FOREIGN KEY (followed_id) REFERENCES facewitter_users(id)
+    FOREIGN KEY (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DESCRIBE facewitter_follows;
@@ -26,7 +25,7 @@ CREATE TABLE facewitter_posts (
    image BLOB,
    content VARCHAR(255),
    created_at VARCHAR(255) NOT NULL,
-   FOREIGN KEY (user_id) REFERENCES facewitter_users(id)
+   FOREIGN KEY (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE
 );
 
 ALTER TABLE facewitter_posts DROP COLUMN created_at;
@@ -41,11 +40,10 @@ DROP TABLE facewitter_posts;
 
 CREATE TABLE facewitter_comments (
     id VARCHAR(255) PRIMARY KEY,
-    post_id VARCHAR(255) NOT NULL,
     user_id VARCHAR(255) NOT NULL,
+    post_id VARCHAR(255) NOT NULL,
     content VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES facewitter_users(id),
-    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
+    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id) ON DELETE CASCADE 
 );
 
 DROP TABLE facewitter_comments;
@@ -72,7 +70,7 @@ SELECT * FROM `facewitter_blockList`;
 CREATE TABLE facewitter_posts_likes (
     user_id VARCHAR(255) NOT NULL,
     post_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
+    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id) ON DELETE CASCADE
 );
 
 SELECT * FROM facewitter_posts_likes;
@@ -84,7 +82,7 @@ DROP TABLE facewitter_posts_likes;
 CREATE TABLE facewitter_comments_likes (
     user_id VARCHAR(255) NOT NULL,
     comment_id VARCHAR(255) NOT NULL,
-    FOREIGN KEY (comment_id) REFERENCES facewitter_comments(id)
+    FOREIGN KEY (comment_id) REFERENCES facewitter_comments(id) ON DELETE CASCADE
 );
 
 SELECT * FROM facewitter_comments_likes;
@@ -96,7 +94,7 @@ CREATE TABLE facewitter_shares (
     user_id VARCHAR(255) NOT NULL,
     post_id VARCHAR(255) NOT NULL,
     created_at BIGINT NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id)
+    FOREIGN KEY (post_id) REFERENCES facewitter_posts(id) ON DELETE CASCADE
 );
 
 DROP TABLE facewitter_shares;

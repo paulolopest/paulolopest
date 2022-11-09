@@ -97,23 +97,7 @@ export class UserData extends BaseDatabase {
     }
     
     deleteUser = async (id: string) => {
-        try {
-            await this.connection("facewitter_posts")
-            .delete()
-            .where({user_id: id})
-            
-            await this.connection("facewitter_comments")
-            .delete()
-            .where({user_id: id})
-
-            await this.connection("facewitter_shares")
-            .delete()
-            .where({user_id: id})
-
-            await this.connection("facewitter_follows")
-            .delete()
-            .where({user_id: id})
-            
+        try {       
             await this.connection(this.tableName)
             .delete()
             .where({id: id})

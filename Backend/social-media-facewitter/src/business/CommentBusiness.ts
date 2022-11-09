@@ -69,7 +69,7 @@ export class CommentBusiness {
 
             const user = this.tokenManager.getTokenData(token)
 
-            const response = await this.commentData.getComments(user.id, postId)
+            const response = await this.commentData.getComments(postId)
 
             return response
         } catch (error:any) {
@@ -135,7 +135,7 @@ export class CommentBusiness {
         }
     }
 
-    likePost = async (token: string, commentId: string) => {
+    likeComment = async (token: string, commentId: string) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
@@ -159,7 +159,7 @@ export class CommentBusiness {
                 throw new CustomError(400, "Comment already liked")
             }
 
-            await this.commentData.likePost(
+            await this.commentData.likeComment(
                 new LikePost (
                     user.id,
                     commentId
@@ -171,7 +171,7 @@ export class CommentBusiness {
         }
     }
 
-    dislikePost = async (token: string, commentId: string) => {
+    dislikeComment = async (token: string, commentId: string) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
@@ -195,7 +195,7 @@ export class CommentBusiness {
                 throw new CustomError(400, "Comment not liked")
             }
 
-            await this.commentData.dislikePost(user.id, commentId)
+            await this.commentData.dislikeComment(user.id, commentId)
 
         } catch (error:any) {
             throw new CustomError(404, error.message)

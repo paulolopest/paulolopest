@@ -72,14 +72,6 @@ export class PostData extends BaseDatabase {
 
     deletePost = async (postId: string, userId: string) => {
         try {
-            await this.connection("facewitter_comments")
-            .delete()
-            .where({post_id: postId})
-
-            await this.connection("facewitter_posts_likes")
-            .delete()
-            .where({post_id: postId})
-
             await this.connection(this.tableName)
             .delete()
             .where({id: postId})

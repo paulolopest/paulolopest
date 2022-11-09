@@ -101,18 +101,26 @@ class UserData extends BaseDatabase_1.BaseDatabase {
         });
         this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.connection("facewitter_posts")
+                yield this.connection("facewitter_comments_likes")
                     .delete()
                     .where({ user_id: id });
                 yield this.connection("facewitter_comments")
                     .delete()
                     .where({ user_id: id });
+                yield this.connection("facewitter_posts_likes")
+                    .delete()
+                    .where({ user_id: id });
                 yield this.connection("facewitter_shares")
+                    .delete()
+                    .where({ user_id: id });
+                yield this.connection("facewitter_posts")
                     .delete()
                     .where({ user_id: id });
                 yield this.connection("facewitter_follows")
                     .delete()
-                    .where({ user_id: id });
+                    .where({ user_id: id })
+                    .or
+                    .where({ followed_id: id });
                 yield this.connection(this.tableName)
                     .delete()
                     .where({ id: id });

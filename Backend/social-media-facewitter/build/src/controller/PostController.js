@@ -100,6 +100,28 @@ class PostController {
                 res.status(404).send(error.sqlMessage || error.message);
             }
         });
+        this.sharePost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { postId } = req.params;
+                yield this.postBusiness.sharePost(token, postId);
+                res.status(200).send("Shared post");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
+        this.deleteShare = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { postId } = req.params;
+                yield this.postBusiness.deleteShare(token, postId);
+                res.status(200).send("Share deleted");
+            }
+            catch (error) {
+                res.status(404).send(error.sqlMessage || error.message);
+            }
+        });
     }
 }
 exports.PostController = PostController;

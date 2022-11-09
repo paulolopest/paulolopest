@@ -20,12 +20,12 @@ export class CommentData extends BaseDatabase {
         }
     }
 
-    getComments = async (userId: string, postId: string) => {
+    getComments = async (postId: string) => {
         try {
             const response = await this.connection(this.tableName)
-            .where({user_id: userId})
-            .andWhere({post_id: postId})
+            .where({post_id: postId})
 
+            console.log(response)
             return response
         } catch (error:any) {
             throw new CustomError(404, error.message)
@@ -46,10 +46,6 @@ export class CommentData extends BaseDatabase {
     
     delete = async (userId: string, commentId: string) => {
         try {
-            await this.connection("facewitter_comments_likes")
-            .delete()
-            .where({comment_id: commentId})
-
             await this.connection(this.tableName)
             .delete()
             .where({id: commentId})
@@ -60,7 +56,7 @@ export class CommentData extends BaseDatabase {
         }
     }
 
-    likePost = async (like: LikePost) => {
+    likeComment = async (like: LikePost) => {
         try {
             await this.connection("facewitter_comments_likes")
             .insert ({
@@ -73,7 +69,7 @@ export class CommentData extends BaseDatabase {
         }
     }
 
-    dislikePost = async (userId: string, commentId: string) => {
+    dislikeComment = async (userId: string, commentId: string) => {
         try {
             await this.connection("facewitter_comments_likes")
             .delete()

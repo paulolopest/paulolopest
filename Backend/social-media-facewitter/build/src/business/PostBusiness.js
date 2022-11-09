@@ -176,6 +176,54 @@ class PostBusiness {
                 throw new CustomError_1.CustomError(404, error.message);
             }
         });
+        this.sharePost = (token, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!postId) {
+                    throw new CustomError_1.CustomError(400, "Enter a post id");
+                }
+                const post = yield this.postData.getPostById(postId);
+                if (!post) {
+                    throw new CustomError_1.CustomError(400, "Post not exist");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                if (!user) {
+                    throw new CustomError_1.CustomError(404, "User fatal error");
+                }
+                yield this.postData.sharePost(user.id, postId);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
+        this.deleteShare = (token, postId) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, "Login first");
+                }
+                if (!postId) {
+                    throw new CustomError_1.CustomError(400, "Enter a post id");
+                }
+                const post = yield this.postData.getPostById(postId);
+                if (!post) {
+                    throw new CustomError_1.CustomError(400, "Post not exist");
+                }
+                const user = this.tokenManager.getTokenData(token);
+                if (!user) {
+                    throw new CustomError_1.CustomError(404, "User fatal error");
+                }
+                const verify = yield this.postData.getSharePost(user.id, postId);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(400, "Post is not yours");
+                }
+                yield this.postData.deleteShare(user.id, postId);
+            }
+            catch (error) {
+                throw new CustomError_1.CustomError(404, error.message);
+            }
+        });
     }
 }
 exports.PostBusiness = PostBusiness;

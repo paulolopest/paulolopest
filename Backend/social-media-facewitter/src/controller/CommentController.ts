@@ -62,7 +62,7 @@ export class CommentController {
             const token = req.headers.authorization as string
             const {commentId} = req.params
 
-            await this.commentBusiness.likePost(token, commentId)
+            await this.commentBusiness.likeComment(token, commentId)
 
             res.status(200).send("Comment liked")
         } catch (error:any) {
@@ -75,7 +75,7 @@ export class CommentController {
             const token = req.headers.authorization as string
             const {commentId} = req.params
 
-            await this.commentBusiness.dislikePost(token, commentId)
+            await this.commentBusiness.dislikeComment(token, commentId)
 
             res.status(200).send("Comment disliked")
         } catch (error:any) {
