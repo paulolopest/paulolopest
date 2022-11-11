@@ -15,6 +15,8 @@ CREATE TABLE facewitter_follows (
     FOREIGN KEY (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+ALTER TABLE facewitter_follows ADD Foreign Key (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE;
+
 DESCRIBE facewitter_follows;
 
 -- ---------------------------------------------------------------------------------------
@@ -54,6 +56,9 @@ SELECT * FROM facewitter_comments;
 ALTER TABLE facewitter_comments DROP COLUMN created_at;
 ALTER TABLE facewitter_comments ADD created_at BIGINT NOT NULL AFTER content;
 
+ALTER TABLE facewitter_comments ADD Foreign Key (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE;
+
+
 -- ---------------------------------------------------------------------------------------
 
 CREATE TABLE facewitter_blockList (
@@ -72,6 +77,7 @@ CREATE TABLE facewitter_posts_likes (
     post_id VARCHAR(255) NOT NULL,
     FOREIGN KEY (post_id) REFERENCES facewitter_posts(id) ON DELETE CASCADE
 );
+ALTER TABLE facewitter_posts_likes ADD Foreign Key (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE;
 
 SELECT * FROM facewitter_posts_likes;
 
@@ -89,6 +95,9 @@ SELECT * FROM facewitter_comments_likes;
 
 DROP TABLE facewitter_comments_likes;
 
+ALTER TABLE facewitter_comments_likes ADD Foreign Key (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE;
+
+
 -- ----------------------------------------------------------------------------------------
 CREATE TABLE facewitter_shares (
     user_id VARCHAR(255) NOT NULL,
@@ -96,6 +105,8 @@ CREATE TABLE facewitter_shares (
     created_at BIGINT NOT NULL,
     FOREIGN KEY (post_id) REFERENCES facewitter_posts(id) ON DELETE CASCADE
 );
+
+ALTER TABLE facewitter_shares ADD Foreign Key (user_id) REFERENCES facewitter_users(id) ON DELETE CASCADE;
 
 DROP TABLE facewitter_shares;
 

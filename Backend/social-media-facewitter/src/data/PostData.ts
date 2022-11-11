@@ -39,7 +39,8 @@ export class PostData extends BaseDatabase {
                 `SELECT * FROM facewitter_posts as post
                 JOIN facewitter_follows as follow
                 WHERE post.user_id = follow.followed_id
-                and follow.user_id = "${id}"`
+                and follow.user_id = "${id}"
+                ORDER BY created_at DESC`
             )
 
             return response[0]
@@ -125,6 +126,7 @@ export class PostData extends BaseDatabase {
             const response = await this.connection("facewitter_shares")
             .where({user_id: userId})
             .andWhere({post_id: postId})
+            .orderBy("created_at", "desc")
 
             return response[0]
         } catch (error:any) {
