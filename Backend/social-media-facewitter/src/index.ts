@@ -26,10 +26,5 @@ app.use(followRouter)
 app.use(commentRouter)
 
 
-// mexer na logica do refresh token, mudar pra allowlist ****
-// mandar os shares junto no get my posts (adicionar created_at no share)
-// adicionar um orderby nos posts
-// readicionar as foreign keys nas tabelas
 // ver o video do dechamps
-// tentar testar a api sem mock
 // testes

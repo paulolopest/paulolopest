@@ -110,6 +110,9 @@ export class UserBusiness {
             }
 
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
+            if(!user) {
+                throw new CustomError(404, "User fatal error")
+            }
 
             await this.userData.logout(user.id, token)
 
@@ -160,9 +163,9 @@ export class UserBusiness {
             if(!currentPassword) {
                 throw new CustomError(400, "Enter your current password")
             }
-            if(!currentPassword) {
+            if(!newPassword) {
                 throw new CustomError(400, "Enter your new password")
-            } else if(currentPassword.length <= 6) {
+            } else if(newPassword.length <= 6) {
                 throw new CustomError(400, "Password must contain more than 6 characters")
             }
 
