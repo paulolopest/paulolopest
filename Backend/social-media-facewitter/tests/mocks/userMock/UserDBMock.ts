@@ -1,35 +1,26 @@
+import { BaseDatabase } from "../../../src/data/BaseDatabase";
 import { User } from "../../../src/models/User";
 import { userMock } from "./UserMock";
 
-export class UserDatabaseMock {
+export class UserDatabaseMock extends BaseDatabase {
+    tableName: string = "facewitter_users"
+
     signup = async (user: User): Promise<void> => {};
 
-    getProfile = async (id: string) => {
-        if (id = "mocked_token") {
-            return userMock
+    public getProfile = async (id: string): Promise<User | undefined> => {
+        if (id === "mocked_token") {
+          return userMock;
         } else {
-            return undefined
+          return undefined;
         }
-    }
+      };
 
-    editUser = async (token: string , name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {
-        if (token === "mocked_token") {
-            return "User edited"
-        } else {
-            undefined
-        }
-    }
+    editUser = async (token: string , name?: string, nickname?: string, email?: string, password?: string, birthDate?: Date) => {}
 
-    editPassword = async (currentPassword: string, newPassword: string, id: string) => {
-        if (id === "mocked_id") {
-            return `Password edited to ${newPassword}`
-        } else {
-            undefined
-        }
-    }
+    editPassword = async (password: string, id: string) => {}
 
     getUserById = async (id: string) => {
-        if (id === "1") {
+        if (id === userMock.getId()) {
             return userMock
         } else undefined
     }
@@ -50,13 +41,7 @@ export class UserDatabaseMock {
         }
     }
 
-    deleteUser = async (id: string) => {
-        if(id === "1") {
-            return "User deleted"
-        } else {
-            undefined
-        }
-    }
+    deleteUser = async (id: string) => {}
 
     logout = async (userId:string, token: string) => {}
 }

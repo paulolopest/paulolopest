@@ -1,13 +1,11 @@
 import { UserBusiness } from "../src/business/UserBusiness";
-import { UserData } from "../src/data/UserData";
 import { HashManagerMock } from "./mocks/servicesMock/HashManagerMock";
 import { IdGeneratorMock } from "./mocks/servicesMock/IdGeneratorMock";
 import { TokenManagerMock } from "./mocks/servicesMock/TokenManagerMock";
 import { UserDatabaseMock } from "./mocks/userMock/UserDBMock";
-import { userMock } from "./mocks/userMock/UserMock";
 
 const userBusinessMock = new UserBusiness (
-    new UserDatabaseMock() as UserData,
+    new UserDatabaseMock(),
     new IdGeneratorMock(),
     new HashManagerMock(),
     new TokenManagerMock()
@@ -350,8 +348,9 @@ describe("Get Profile test", () => {
     test("Return when user not found", async () => {
         expect.assertions
         try {
-            const result = await userBusinessMock.getProfile("a")
+            const result = await userBusinessMock.getProfile("mocked_id")
 
+            console.log(result)
             expect(result).toBeFalsy()
         } catch (error:any) {
             expect(error.message).toEqual("User not found")
@@ -450,17 +449,6 @@ describe("Edit Password test", () => {
             expect(error.message).toEqual("The password cannot be the same")
         }
     })
-
-    // test("Return when current password is wrong", async () => {
-    //     expect.assertions
-    //     try {
-    //         const result = await userBusinessMock.editPassword("paulo1234", "paulo1235", "mocked_id")
-
-    //         expect(result).toBeFalsy()
-    //     } catch (error:any) {
-    //         expect(error.message).toEqual("Incorrect password")
-    //     }
-    // })
 
 })
 

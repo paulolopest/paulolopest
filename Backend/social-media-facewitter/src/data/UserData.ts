@@ -3,7 +3,7 @@ import { currentTime } from "../services/Date";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UserData extends BaseDatabase {
-    private tableName: string = "facewitter_users"
+    tableName: string = "facewitter_users"
 
     signup = async (user: User) => {
         try {
@@ -23,7 +23,7 @@ export class UserData extends BaseDatabase {
     }
 
     
-    getProfile = async (id: string) => {
+    getProfile = async (id: string): Promise<User | undefined> => {
         try {
             const response = await this.connection(this.tableName)
             .select("id", "name", "nickname", "email", "birth_date")

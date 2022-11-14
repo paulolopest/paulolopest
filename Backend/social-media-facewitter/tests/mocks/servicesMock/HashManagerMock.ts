@@ -4,6 +4,10 @@ export class HashManagerMock {
     }
 
     compare = async (password: string, cypherPassword: string):Promise<boolean> => {
-        return password === cypherPassword
+        if(password === cypherPassword) {
+            return true
+        } else {
+            return false
+        }
     }
 }
