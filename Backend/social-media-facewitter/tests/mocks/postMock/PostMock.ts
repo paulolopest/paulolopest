@@ -1,12 +1,6 @@
-export class Post {
-    constructor(
-        protected id: string,
-        protected user_id: string,
-        protected created_at: Date | number,
-        protected image?: Blob,
-        protected content?: string
-    ) {}
+import { Like, Post } from "../../../src/models/Post"
 
+export class PostMock extends Post {
     public getId(): string {
         return this.id
     }
@@ -24,12 +18,19 @@ export class Post {
     }
 }
 
-export class Like {
-    constructor (
-        protected userId: string,
-        protected postId: string
-    ) {}
+export const postMock = new PostMock (
+    "mocked_postId",
+    "mocked_userId",
+    "2022/08/24" as unknown as Date,
+    undefined,
+    "Post content"
+) 
 
+//
+//
+//
+
+export class LikeMock extends Like {
     public getUserId(): string {
         return this.userId
     }
@@ -37,3 +38,8 @@ export class Like {
         return this.postId
     }
 }
+
+export const likeMock = new LikeMock (
+    "mocked_userId",
+    "mocked_postId"
+)

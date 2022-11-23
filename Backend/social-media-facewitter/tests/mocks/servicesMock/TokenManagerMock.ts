@@ -6,6 +6,6 @@ export class TokenManagerMock {
     }
 
     getTokenData = (token: string) => {
-        return {id: "mocked_id"}
+        return {id: "mocked_userId"}
     }
 }

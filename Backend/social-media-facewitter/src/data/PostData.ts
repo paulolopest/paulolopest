@@ -3,7 +3,7 @@ import { Like, Post } from "../models/Post";
 import { currentTime } from "../services/Date";
 
 export class PostData extends BaseDatabase {
-    private tableName = "facewitter_posts"
+    tableName = "facewitter_posts"
 
     create = async (post: Post) => {
         try {
