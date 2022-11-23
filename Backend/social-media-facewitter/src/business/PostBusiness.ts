@@ -13,7 +13,7 @@ export class PostBusiness {
         private tokenManager: TokenManager
         ) {}
 
-    create = async (token: string, image: Blob,content?: string) => {
+    create = async (token: string, content: string,  image?: Blob) => {
         try {
             if(!token) {
                 throw new CustomError(401, "Login first")
@@ -89,12 +89,12 @@ export class PostBusiness {
 
             const user: AuthenticationData = this.tokenManager.getTokenData(token)
             const post = await this.postData.getPostById(postId)
-
-            if(user.id != post.user_id) {
-                throw new CustomError(406, "The post is not yours")
-            }
+            
             if(!post) {
                 throw new CustomError(406, "Post not exist")
+            }
+            if(user.id != post.user_id) {
+                throw new CustomError(406, "The post is not yours")
             }
 
             await this.postData.editPost(postId, content)
