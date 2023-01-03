@@ -60,6 +60,8 @@ export class UserData {
 					username: true,
 				},
 			});
+
+			return result;
 		} catch (error: any) {
 			throw new Error(error.message);
 		}

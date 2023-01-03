@@ -1,6 +1,7 @@
+import { postRouter } from './router/PostRouter';
+import { userRouter } from './router/UserRouter';
 import express, { Express } from 'express';
 import cors from 'cors';
-import { userRouter } from './router/UserRouter';
 
 export const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -17,3 +18,4 @@ const server = app.listen(port, () => {
 });
 
 app.use(userRouter);
+app.use(postRouter);
