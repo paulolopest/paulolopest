@@ -1,3 +1,4 @@
+import { prisma } from '@prisma/client';
 import { prismaClient } from './BaseDatabase';
 
 export class UserData {
@@ -22,12 +23,60 @@ export class UserData {
 	};
 
 	getByUsername = async (username: string) => {
-		const result = await prismaClient.user.findUnique({
-			where: {
-				username,
-			},
-		});
+		try {
+			const result = await prismaClient.user.findUnique({
+				where: {
+					username,
+				},
+			});
 
-		return result;
+			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getUserById = async (userId: string) => {
+		try {
+			const result = await prismaClient.user.findUnique({
+				where: {
+					id: userId,
+				},
+			});
+
+			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getProfile = async (userId: string) => {
+		try {
+			const result = await prismaClient.user.findUnique({
+				where: { id: userId },
+				select: {
+					id: true,
+					name: true,
+					username: true,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	editPassword = async (id: string, newPassword: string) => {
+		try {
+			await prismaClient.user.update({
+				where: {
+					id,
+				},
+				data: {
+					password: newPassword,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
 	};
 }
