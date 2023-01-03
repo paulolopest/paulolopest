@@ -1,13 +1,25 @@
 import { UserController } from '../controller/UserController';
 import { UserBusiness } from '../business/UserBusiness';
+import { TokenManager } from '../services/TokenManager';
 import { IdGenerator } from '../services/IdGenerator';
+import { HashManager } from '../services/HashManager';
 import { UserData } from '../data/UserData';
-import express from 'express';
+import express, { Router } from 'express';
 
-const userBusiness = new UserBusiness(new UserData(), new IdGenerator());
+const userBusiness: UserBusiness = new UserBusiness(
+	new UserData(),
+	new IdGenerator(),
+	new HashManager(),
+	new TokenManager()
+);
 
-const userController = new UserController(userBusiness);
+const userController: UserController = new UserController(userBusiness);
 
-export const userRouter = express.Router();
+export const userRouter: Router = express.Router();
 
 userRouter.post('/signup', userController.signup);
+userRouter.post('/login', userController.login);
+
+userRouter.get('/profile', userController.getProfile);
+
+userRouter.put('/profile/edit-password', userController.editPassword);

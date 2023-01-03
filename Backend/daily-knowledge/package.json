@@ -30,7 +30,7 @@
   "scripts": {
     "test": "clear && echo \"Running tests...\" && jest",
     "test:watch": "clear && echo \"Running tests...\" && jest --watchAll",
-    "start": "clear && tsc && node ./build",
+    "start": "clear && tsc && node ./build/src",
     "dev": "ts-node-dev ./src/index.ts"
   },
   "keywords": [],
