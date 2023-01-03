@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id       String @id
+  id       String  @id
   name     String
-  username String @unique
+  username String  @unique
   password String
+  admin    Boolean @default(false)
 }
 
-model Knowledge {
+model Post {
   id      String @id
-  author  String
+  title   String @unique
   text    String
   example String
+  author  String
   url     String
 }
