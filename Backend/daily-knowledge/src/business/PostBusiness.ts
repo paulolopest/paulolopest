@@ -16,9 +16,9 @@ export class PostBusiness {
 		token: string,
 		title: string,
 		text: string,
-		example: string,
 		author: string,
-		url: string
+		source: string,
+		tags: Array<string>
 	) => {
 		try {
 			if (!token) {
@@ -30,14 +30,14 @@ export class PostBusiness {
 			if (!text) {
 				throw new CustomError(400, 'Enter a text');
 			}
-			if (!example) {
-				throw new CustomError(400, 'Enter a example');
-			}
 			if (!author) {
 				throw new CustomError(400, 'Enter a author');
 			}
-			if (!url) {
-				throw new CustomError(400, 'Enter a url');
+			if (!source) {
+				throw new CustomError(400, 'Enter a source');
+			}
+			if (!tags) {
+				throw new CustomError(400, 'Enter a tags');
 			}
 
 			const tokenData = this.tokenManager.getTokenData(token);
@@ -54,7 +54,50 @@ export class PostBusiness {
 
 			const id = this.idGenerator.generate();
 
-			await this.postData.create(id, title, text, example, author, url);
+			await this.postData.create(id, title, text, author, source, tags);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new CustomError(404, error.message);
+			}
+		}
+	};
+
+	editPost = async (
+		token: string,
+		postId: string,
+		title?: string,
+		text?: string,
+		author?: string,
+		source?: string,
+		tags?: Array<string>
+	) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!postId) {
+				throw new CustomError(401, 'Enter a post id');
+			}
+
+			const post = await this.postData.getPostById(postId);
+			if (!post) {
+				throw new CustomError(409, 'Post not found');
+			}
+
+			const tokenData = this.tokenManager.getTokenData(token);
+
+			const user = await this.userData.getUserById(tokenData.id);
+			if (!user) {
+				throw new CustomError(404, 'Fatal error');
+			}
+
+			if ((user.admin = false)) {
+				throw new CustomError(401, 'Just admin can edit posts');
+			}
+
+			await this.postData.editPost(postId, title, text, author, source, tags);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
@@ -67,6 +110,60 @@ export class PostBusiness {
 	getAllPosts = async () => {
 		try {
 			const result = await this.postData.getAllPosts();
+
+			return result;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new CustomError(404, error.message);
+			}
+		}
+	};
+
+	getPostByAuthor = async (author: string) => {
+		try {
+			if (!author) {
+				throw new CustomError(400, 'Enter an author');
+			}
+
+			const result = await this.postData.getPostByAuthor(author);
+
+			return result;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new CustomError(404, error.message);
+			}
+		}
+	};
+
+	getPostByTag = async (tags: string) => {
+		try {
+			if (!tags) {
+				throw new CustomError(400, 'Enter a tag');
+			}
+
+			const result = this.postData.getPostByTag(tags);
+
+			return result;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new CustomError(404, error.message);
+			}
+		}
+	};
+
+	getPostByTitle = async (title: string) => {
+		try {
+			if (!title) {
+				throw new CustomError(400, 'Enter a title');
+			}
+
+			const result = await this.postData.getPostByTitle(title);
 
 			return result;
 		} catch (error: any) {

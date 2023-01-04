@@ -19,3 +19,6 @@ const server = app.listen(port, () => {
 
 app.use(userRouter);
 app.use(postRouter);
+
+//edit post
+//editar username

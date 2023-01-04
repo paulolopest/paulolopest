@@ -17,6 +17,13 @@ const postController: PostController = new PostController(postBusiness);
 
 export const postRouter: Router = express.Router();
 
+// Routes
+
 postRouter.post('/add-post', postController.create);
 
 postRouter.get('/all-posts', postController.getAllPosts);
+postRouter.get('/search/tags/:tags', postController.getPostByTag);
+postRouter.get('/search/author/:author', postController.getPostByAuthor);
+postRouter.get('/search/post/:title', postController.getPostByTitle);
+
+postRouter.put('/post/edit', postController.editPost);
