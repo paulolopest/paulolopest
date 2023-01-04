@@ -14,9 +14,9 @@ CREATE TABLE "Post" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "text" TEXT NOT NULL,
-    "example" TEXT NOT NULL,
     "author" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "tags" TEXT[],
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
