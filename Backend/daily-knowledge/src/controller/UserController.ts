@@ -43,8 +43,6 @@ export class UserController {
 			const token: string = req.headers.authorization as string;
 			const result = await this.userBusiness.getProfile(token);
 
-			console.log(result);
-
 			res.status(200).send(result);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
@@ -62,6 +60,38 @@ export class UserController {
 			await this.userBusiness.editPassword(token, currentPassword, newPassword);
 
 			res.status(200).send('Password updated');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
+	editUsername = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+			const { newUsername } = req.body;
+
+			await this.userBusiness.editUsername(token, newUsername);
+
+			res.status(200).send(`Username updated to ${newUsername}`);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
+	deleteUser = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+			await this.userBusiness.deleteUser(token);
+
+			res.status(200).send('User deleted');
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				res.status(error.statusCode).send(error.message);

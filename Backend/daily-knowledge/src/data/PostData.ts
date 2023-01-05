@@ -1,7 +1,7 @@
 import { prismaClient } from './BaseDatabase';
 
 export class PostData {
-	create = async (
+	createPost = async (
 		id: string,
 		title: string,
 		text: string,
@@ -108,6 +108,16 @@ export class PostData {
 			});
 
 			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	deletePost = async (id: string) => {
+		try {
+			await prismaClient.post.delete({
+				where: { id },
+			});
 		} catch (error: any) {
 			throw new Error(error.message);
 		}

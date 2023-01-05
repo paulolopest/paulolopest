@@ -81,4 +81,27 @@ export class UserData {
 			throw new Error(error.message);
 		}
 	};
+
+	editUsername = async (id: string, newUsername: string) => {
+		try {
+			await prismaClient.user.update({
+				where: { id },
+				data: {
+					username: newUsername,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	deleteUser = async (id: string) => {
+		try {
+			await prismaClient.user.delete({
+				where: { id },
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
 }

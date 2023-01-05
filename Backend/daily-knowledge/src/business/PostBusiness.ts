@@ -12,7 +12,7 @@ export class PostBusiness {
 		private idGenerator: IdGenerator
 	) {}
 
-	create = async (
+	createPost = async (
 		token: string,
 		title: string,
 		text: string,
@@ -54,7 +54,7 @@ export class PostBusiness {
 
 			const id = this.idGenerator.generate();
 
-			await this.postData.create(id, title, text, author, source, tags);
+			await this.postData.createPost(id, title, text, author, source, tags);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
@@ -166,6 +166,41 @@ export class PostBusiness {
 			const result = await this.postData.getPostByTitle(title);
 
 			return result;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new CustomError(404, error.message);
+			}
+		}
+	};
+
+	deletePost = async (token: string, id: string) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!id) {
+				throw new CustomError(400, 'Enter a post id');
+			}
+
+			const post = await this.postData.getPostById(id);
+			if (!post) {
+				throw new CustomError(406, 'Post not found');
+			}
+
+			const tokenData = this.tokenManager.getTokenData(token);
+
+			const user = await this.userData.getUserById(tokenData.id);
+			if (!user) {
+				throw new CustomError(404, 'Fatal error');
+			}
+
+			if (!user.admin) {
+				throw new CustomError(401, 'Just admin can delete posts');
+			}
+
+			await this.postData.deletePost(id);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
