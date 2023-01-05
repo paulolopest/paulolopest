@@ -19,11 +19,13 @@ export const postRouter: Router = express.Router();
 
 // Routes
 
-postRouter.post('/add-post', postController.create);
+postRouter.post('/add-post', postController.createPost);
+
+postRouter.put('/post/edit', postController.editPost);
 
 postRouter.get('/all-posts', postController.getAllPosts);
 postRouter.get('/search/tags/:tags', postController.getPostByTag);
-postRouter.get('/search/author/:author', postController.getPostByAuthor);
 postRouter.get('/search/post/:title', postController.getPostByTitle);
+postRouter.get('/search/author/:author', postController.getPostByAuthor);
 
-postRouter.put('/post/edit', postController.editPost);
+postRouter.delete('/post/:id/delete', postController.deletePost);

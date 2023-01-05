@@ -43,6 +43,8 @@ export class UserBusiness {
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
 			}
 		}
 	};
@@ -77,7 +79,7 @@ export class UserBusiness {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
 			} else {
-				throw new CustomError(404, error.message);
+				throw new Error(error.message);
 			}
 		}
 	};
@@ -97,7 +99,7 @@ export class UserBusiness {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
 			} else {
-				throw new CustomError(404, error.message);
+				throw new Error(error.message);
 			}
 		}
 	};
@@ -144,7 +146,51 @@ export class UserBusiness {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
 			} else {
-				throw new CustomError(404, error.message);
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	editUsername = async (token: string, newUsername: string) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!newUsername) {
+				throw new CustomError(400, 'Enter a username');
+			}
+
+			const verifyUsername = await this.userData.getByUsername(newUsername);
+			if (verifyUsername) {
+				throw new CustomError(401, 'Username already in use');
+			}
+
+			const tokenData = this.tokenManager.getTokenData(token);
+
+			await this.userData.editUsername(tokenData.id, newUsername);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	deleteUser = async (token: string) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+
+			const tokenData = this.tokenManager.getTokenData(token);
+
+			await this.userData.deleteUser(tokenData.id);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
 			}
 		}
 	};
