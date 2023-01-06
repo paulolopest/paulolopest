@@ -63,10 +63,20 @@ export class PostData {
 		}
 	};
 
-	getPostByTitle = async (title: string) => {
+	searchPost = async (title: string) => {
 		try {
-			const result = await prismaClient.post.findFirst({
-				where: { title: { contains: title } },
+			const result = await prismaClient.post.findMany({
+				where: {
+					OR: [
+						{
+							title: { contains: title },
+						},
+						{
+							tags: { has: title },
+						},
+					],
+				},
+				orderBy: [{ created_at: 'desc' }],
 			});
 
 			return result;
@@ -77,7 +87,9 @@ export class PostData {
 
 	getAllPosts = async () => {
 		try {
-			const result = await prismaClient.post.findMany({});
+			const result = await prismaClient.post.findMany({
+				orderBy: [{ created_at: 'desc' }],
+			});
 
 			return result;
 		} catch (error: any) {
@@ -91,6 +103,7 @@ export class PostData {
 				where: {
 					author,
 				},
+				orderBy: [{ created_at: 'desc' }],
 			});
 
 			return result;
@@ -105,6 +118,7 @@ export class PostData {
 				where: {
 					tags: { has: tags },
 				},
+				orderBy: [{ created_at: 'desc' }],
 			});
 
 			return result;

@@ -64,6 +64,7 @@ class UserData {
                         username: true,
                     },
                 });
+                return result;
             }
             catch (error) {
                 throw new Error(error.message);
@@ -78,6 +79,29 @@ class UserData {
                     data: {
                         password: newPassword,
                     },
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.editUsername = (id, newUsername) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield BaseDatabase_1.prismaClient.user.update({
+                    where: { id },
+                    data: {
+                        username: newUsername,
+                    },
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield BaseDatabase_1.prismaClient.user.delete({
+                    where: { id },
                 });
             }
             catch (error) {

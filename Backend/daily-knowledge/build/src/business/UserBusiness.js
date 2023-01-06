@@ -43,6 +43,9 @@ class UserBusiness {
                 if (error instanceof CustomError_1.CustomError) {
                     throw new CustomError_1.CustomError(error.statusCode, error.message);
                 }
+                else {
+                    throw new Error(error.message);
+                }
             }
         });
         this.login = (username, password) => __awaiter(this, void 0, void 0, function* () {
@@ -69,7 +72,7 @@ class UserBusiness {
                     throw new CustomError_1.CustomError(error.statusCode, error.message);
                 }
                 else {
-                    throw new CustomError_1.CustomError(404, error.message);
+                    throw new Error(error.message);
                 }
             }
         });
@@ -87,7 +90,7 @@ class UserBusiness {
                     throw new CustomError_1.CustomError(error.statusCode, error.message);
                 }
                 else {
-                    throw new CustomError_1.CustomError(404, error.message);
+                    throw new Error(error.message);
                 }
             }
         });
@@ -122,7 +125,48 @@ class UserBusiness {
                     throw new CustomError_1.CustomError(error.statusCode, error.message);
                 }
                 else {
-                    throw new CustomError_1.CustomError(404, error.message);
+                    throw new Error(error.message);
+                }
+            }
+        });
+        this.editUsername = (token, newUsername) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                if (!newUsername) {
+                    throw new CustomError_1.CustomError(400, 'Enter a username');
+                }
+                const verifyUsername = yield this.userData.getByUsername(newUsername);
+                if (verifyUsername) {
+                    throw new CustomError_1.CustomError(401, 'Username already in use');
+                }
+                const tokenData = this.tokenManager.getTokenData(token);
+                yield this.userData.editUsername(tokenData.id, newUsername);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
+                }
+            }
+        });
+        this.deleteUser = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                const tokenData = this.tokenManager.getTokenData(token);
+                yield this.userData.deleteUser(tokenData.id);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
                 }
             }
         });

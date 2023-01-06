@@ -98,10 +98,10 @@ export class PostController {
 		}
 	};
 
-	getPostByTitle = async (req: Request, res: Response) => {
+	searchPost = async (req: Request, res: Response) => {
 		try {
 			const { title } = req.params;
-			const result = await this.postBusiness.getPostByTitle(title);
+			const result = await this.postBusiness.searchPost(title);
 
 			console.log(result);
 

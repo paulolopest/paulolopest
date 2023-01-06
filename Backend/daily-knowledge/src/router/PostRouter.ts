@@ -25,7 +25,7 @@ postRouter.put('/post/edit', postController.editPost);
 
 postRouter.get('/all-posts', postController.getAllPosts);
 postRouter.get('/search/tags/:tags', postController.getPostByTag);
-postRouter.get('/search/post/:title', postController.getPostByTitle);
+postRouter.get('/search/post/:title', postController.searchPost);
 postRouter.get('/search/author/:author', postController.getPostByAuthor);
 
 postRouter.delete('/post/:id/delete', postController.deletePost);

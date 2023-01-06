@@ -157,13 +157,13 @@ export class PostBusiness {
 		}
 	};
 
-	getPostByTitle = async (title: string) => {
+	searchPost = async (title: string) => {
 		try {
 			if (!title) {
 				throw new CustomError(400, 'Enter a title');
 			}
 
-			const result = await this.postData.getPostByTitle(title);
+			const result = await this.postData.searchPost(title);
 
 			return result;
 		} catch (error: any) {
