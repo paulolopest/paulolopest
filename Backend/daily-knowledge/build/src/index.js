@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
+const PostRouter_1 = require("./router/PostRouter");
+const UserRouter_1 = require("./router/UserRouter");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const UserRouter_1 = require("./router/UserRouter");
 exports.app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 exports.app.use(express_1.default.json());
@@ -20,4 +21,5 @@ const server = exports.app.listen(port, () => {
     }
 });
 exports.app.use(UserRouter_1.userRouter);
+exports.app.use(PostRouter_1.postRouter);
 //# sourceMappingURL=index.js.map

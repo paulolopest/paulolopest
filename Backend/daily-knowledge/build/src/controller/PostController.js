@@ -9,45 +9,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.PostController = void 0;
 const CustomError_1 = require("../models/CustomError");
-class UserController {
-    constructor(userBusiness) {
-        this.userBusiness = userBusiness;
-        this.signup = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { name, username, password } = req.body;
-                yield this.userBusiness.signup(name, username, password);
-                res.status(201).send('User successfully created');
-            }
-            catch (error) {
-                if (error instanceof CustomError_1.CustomError) {
-                    res.status(error.statusCode).send(error.message);
-                }
-                else {
-                    res.status(404).send(error.message);
-                }
-            }
-        });
-        this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { username, password } = req.body;
-                const result = yield this.userBusiness.login(username, password);
-                res.status(200).send({ token: result });
-            }
-            catch (error) {
-                if (error instanceof CustomError_1.CustomError) {
-                    res.status(error.statusCode).send(error.message);
-                }
-                else {
-                    res.status(404).send(error.message);
-                }
-            }
-        });
-        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+class PostController {
+    constructor(postBusiness) {
+        this.postBusiness = postBusiness;
+        this.createPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
-                const result = yield this.userBusiness.getProfile(token);
+                const { title, text, author, source, tags } = req.body;
+                yield this.postBusiness.createPost(token, title, text, author, source, tags);
+                res.status(201).send('Post created');
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.editPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { postId, title, text, author, source, tags } = req.body;
+                const result = yield this.postBusiness.editPost(token, postId, title, text, author, source, tags);
+                res.status(201).send('Post edited');
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.getAllPosts = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = yield this.postBusiness.getAllPosts();
                 res.status(200).send(result);
             }
             catch (error) {
@@ -59,12 +60,11 @@ class UserController {
                 }
             }
         });
-        this.editPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getPostByAuthor = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const token = req.headers.authorization;
-                const { currentPassword, newPassword } = req.body;
-                yield this.userBusiness.editPassword(token, currentPassword, newPassword);
-                res.status(200).send('Password updated');
+                const { author } = req.params;
+                const result = yield this.postBusiness.getPostByAuthor(author);
+                res.status(200).send(result);
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {
@@ -75,12 +75,11 @@ class UserController {
                 }
             }
         });
-        this.editUsername = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getPostByTag = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const token = req.headers.authorization;
-                const { newUsername } = req.body;
-                yield this.userBusiness.editUsername(token, newUsername);
-                res.status(200).send(`Username updated to ${newUsername}`);
+                const { tags } = req.params;
+                const result = yield this.postBusiness.getPostByTag(tags);
+                res.status(200).send(result);
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {
@@ -91,11 +90,28 @@ class UserController {
                 }
             }
         });
-        this.deleteUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.searchPost = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { title } = req.params;
+                const result = yield this.postBusiness.searchPost(title);
+                console.log(result);
+                res.status(200).send(result);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.deletePost = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
-                yield this.userBusiness.deleteUser(token);
-                res.status(200).send('User deleted');
+                const { id } = req.params;
+                yield this.postBusiness.deletePost(token, id);
+                res.status(200).send('Post deleted');
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {
@@ -108,5 +124,5 @@ class UserController {
         });
     }
 }
-exports.UserController = UserController;
-//# sourceMappingURL=UserController.js.map
+exports.PostController = PostController;
+//# sourceMappingURL=PostController.js.map
