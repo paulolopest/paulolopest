@@ -1,15 +1,17 @@
+import { AuthenticationData } from '../models/AuthenticationData';
 import { TokenManager } from '../services/TokenManager';
 import { IdGenerator } from '../services/IdGenerator';
 import { CustomError } from '../models/CustomError';
 import { PostData } from '../data/PostData';
 import { UserData } from '../data/UserData';
+import { Post, User } from '@prisma/client';
 
 export class PostBusiness {
 	constructor(
 		private postData: PostData,
 		private userData: UserData,
-		private tokenManager: TokenManager,
-		private idGenerator: IdGenerator
+		private idGenerator: IdGenerator,
+		private tokenManager: TokenManager
 	) {}
 
 	createPost = async (
@@ -40,19 +42,20 @@ export class PostBusiness {
 				throw new CustomError(400, 'Enter a tags');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
-			const user = await this.userData.getUserById(tokenData.id);
+			const user: User | null = await this.userData.getUserById(tokenData.id);
 			if (!user) {
-				throw new CustomError(404, 'Fatal error');
+				throw new CustomError(404, 'Fatal error, user not found');
 			}
 
-			const verifyPermission = user.admin;
+			const verifyPermission: boolean = user.admin;
 			if (!verifyPermission) {
 				throw new CustomError(401, 'Only admins can post');
 			}
 
-			const id = this.idGenerator.generate();
+			const id: string = this.idGenerator.generate();
 
 			await this.postData.createPost(id, title, text, author, source, tags);
 		} catch (error: any) {
@@ -81,16 +84,17 @@ export class PostBusiness {
 				throw new CustomError(401, 'Enter a post id');
 			}
 
-			const post = await this.postData.getPostById(postId);
+			const post: Post | null = await this.postData.getPostById(postId);
 			if (!post) {
 				throw new CustomError(409, 'Post not found');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
-			const user = await this.userData.getUserById(tokenData.id);
+			const user: User | null = await this.userData.getUserById(tokenData.id);
 			if (!user) {
-				throw new CustomError(404, 'Fatal error');
+				throw new CustomError(404, 'Fatal error, user not found');
 			}
 
 			if ((user.admin = false)) {
@@ -107,9 +111,9 @@ export class PostBusiness {
 		}
 	};
 
-	getAllPosts = async () => {
+	getAllPosts = async (): Promise<Post[]> => {
 		try {
-			const result = await this.postData.getAllPosts();
+			const result: Post[] = await this.postData.getAllPosts();
 
 			return result;
 		} catch (error: any) {
@@ -121,13 +125,13 @@ export class PostBusiness {
 		}
 	};
 
-	getPostByAuthor = async (author: string) => {
+	getPostByAuthor = async (author: string): Promise<Post[]> => {
 		try {
 			if (!author) {
 				throw new CustomError(400, 'Enter an author');
 			}
 
-			const result = await this.postData.getPostByAuthor(author);
+			const result: Post[] = await this.postData.getPostByAuthor(author);
 
 			return result;
 		} catch (error: any) {
@@ -139,13 +143,13 @@ export class PostBusiness {
 		}
 	};
 
-	getPostByTag = async (tags: string) => {
+	getPostByTag = async (tags: string): Promise<Post[]> => {
 		try {
 			if (!tags) {
 				throw new CustomError(400, 'Enter a tag');
 			}
 
-			const result = this.postData.getPostByTag(tags);
+			const result: Promise<Post[]> = this.postData.getPostByTag(tags);
 
 			return result;
 		} catch (error: any) {
@@ -157,13 +161,13 @@ export class PostBusiness {
 		}
 	};
 
-	searchPost = async (title: string) => {
+	searchPost = async (title: string): Promise<Post[]> => {
 		try {
 			if (!title) {
 				throw new CustomError(400, 'Enter a title');
 			}
 
-			const result = await this.postData.searchPost(title);
+			const result: Post[] = await this.postData.searchPost(title);
 
 			return result;
 		} catch (error: any) {
@@ -184,16 +188,17 @@ export class PostBusiness {
 				throw new CustomError(400, 'Enter a post id');
 			}
 
-			const post = await this.postData.getPostById(id);
+			const post: Post | null = await this.postData.getPostById(id);
 			if (!post) {
 				throw new CustomError(406, 'Post not found');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
-			const user = await this.userData.getUserById(tokenData.id);
+			const user: User | null = await this.userData.getUserById(tokenData.id);
 			if (!user) {
-				throw new CustomError(404, 'Fatal error');
+				throw new CustomError(404, 'Fatal error, user not found');
 			}
 
 			if (!user.admin) {

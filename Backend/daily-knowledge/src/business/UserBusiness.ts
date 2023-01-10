@@ -1,3 +1,4 @@
+import { AuthenticationData } from '../models/AuthenticationData';
 import { TokenManager } from '../services/TokenManager';
 import { IdGenerator } from '../services/IdGenerator';
 import { HashManager } from '../services/HashManager';
@@ -49,7 +50,7 @@ export class UserBusiness {
 		}
 	};
 
-	login = async (username: string, password: string) => {
+	login = async (username: string, password: string): Promise<string> => {
 		try {
 			if (!username) {
 				throw new CustomError(400, 'Enter a username');
@@ -72,7 +73,7 @@ export class UserBusiness {
 				throw new CustomError(401, 'Invalid credentials');
 			}
 
-			const token = this.tokenManager.generate({ id: user.id });
+			const token: string = this.tokenManager.generate({ id: user.id });
 
 			return token;
 		} catch (error: any) {
@@ -90,7 +91,8 @@ export class UserBusiness {
 				throw new CustomError(401, 'Login first');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
 			const user = await this.userData.getProfile(tokenData.id);
 
@@ -123,14 +125,15 @@ export class UserBusiness {
 				throw new CustomError(400, 'The password must contain 8 characters');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
-			const user = await this.userData.getUserById(tokenData.id);
+			const user: User | null = await this.userData.getUserById(tokenData.id);
 			if (!user) {
 				throw new CustomError(404, 'Fatal error');
 			}
 
-			const verifyCurrentPassword = await this.hashManager.verify(
+			const verifyCurrentPassword: boolean = await this.hashManager.verify(
 				currentPassword,
 				user.password
 			);
@@ -139,7 +142,7 @@ export class UserBusiness {
 				throw new CustomError(401, 'Incorrect password');
 			}
 
-			const hashPassword = await this.hashManager.hash(newPassword);
+			const hashPassword: string = await this.hashManager.hash(newPassword);
 
 			await this.userData.editPassword(tokenData.id, hashPassword);
 		} catch (error: any) {
@@ -160,12 +163,15 @@ export class UserBusiness {
 				throw new CustomError(400, 'Enter a username');
 			}
 
-			const verifyUsername = await this.userData.getByUsername(newUsername);
+			const verifyUsername: User | null = await this.userData.getByUsername(
+				newUsername
+			);
 			if (verifyUsername) {
 				throw new CustomError(401, 'Username already in use');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
 			await this.userData.editUsername(tokenData.id, newUsername);
 		} catch (error: any) {
@@ -183,7 +189,8 @@ export class UserBusiness {
 				throw new CustomError(401, 'Login first');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
 			await this.userData.deleteUser(tokenData.id);
 		} catch (error: any) {
@@ -194,6 +201,4 @@ export class UserBusiness {
 			}
 		}
 	};
-
-	//
 }

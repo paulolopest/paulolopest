@@ -1,5 +1,5 @@
-import { prisma } from '@prisma/client';
 import { prismaClient } from './BaseDatabase';
+import { User } from '@prisma/client';
 
 export class UserData {
 	signup = async (
@@ -24,7 +24,7 @@ export class UserData {
 
 	getByUsername = async (username: string) => {
 		try {
-			const result = await prismaClient.user.findUnique({
+			const result: User | null = await prismaClient.user.findUnique({
 				where: {
 					username,
 				},
@@ -38,7 +38,7 @@ export class UserData {
 
 	getUserById = async (userId: string) => {
 		try {
-			const result = await prismaClient.user.findUnique({
+			const result: User | null = await prismaClient.user.findUnique({
 				where: {
 					id: userId,
 				},
