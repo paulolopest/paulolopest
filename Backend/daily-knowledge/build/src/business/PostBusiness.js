@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostBusiness = void 0;
 const CustomError_1 = require("../models/CustomError");
 class PostBusiness {
-    constructor(postData, userData, tokenManager, idGenerator) {
+    constructor(postData, userData, idGenerator, tokenManager) {
         this.postData = postData;
         this.userData = userData;
-        this.tokenManager = tokenManager;
         this.idGenerator = idGenerator;
+        this.tokenManager = tokenManager;
         this.createPost = (token, title, text, author, source, tags) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
@@ -40,7 +40,7 @@ class PostBusiness {
                 const tokenData = this.tokenManager.getTokenData(token);
                 const user = yield this.userData.getUserById(tokenData.id);
                 if (!user) {
-                    throw new CustomError_1.CustomError(404, 'Fatal error');
+                    throw new CustomError_1.CustomError(404, 'Fatal error, user not found');
                 }
                 const verifyPermission = user.admin;
                 if (!verifyPermission) {
@@ -73,7 +73,7 @@ class PostBusiness {
                 const tokenData = this.tokenManager.getTokenData(token);
                 const user = yield this.userData.getUserById(tokenData.id);
                 if (!user) {
-                    throw new CustomError_1.CustomError(404, 'Fatal error');
+                    throw new CustomError_1.CustomError(404, 'Fatal error, user not found');
                 }
                 if ((user.admin = false)) {
                     throw new CustomError_1.CustomError(401, 'Just admin can edit posts');
@@ -169,7 +169,7 @@ class PostBusiness {
                 const tokenData = this.tokenManager.getTokenData(token);
                 const user = yield this.userData.getUserById(tokenData.id);
                 if (!user) {
-                    throw new CustomError_1.CustomError(404, 'Fatal error');
+                    throw new CustomError_1.CustomError(404, 'Fatal error, user not found');
                 }
                 if (!user.admin) {
                     throw new CustomError_1.CustomError(401, 'Just admin can delete posts');

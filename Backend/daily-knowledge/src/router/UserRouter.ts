@@ -22,9 +22,9 @@ export const userRouter: Router = express.Router();
 userRouter.post('/login', userController.login);
 userRouter.post('/signup', userController.signup);
 
-userRouter.get('/profile', userController.getProfile);
-
 userRouter.put('/profile/edit-password', userController.editPassword);
 userRouter.put('/profile/edit-username', userController.editUsername);
+
+userRouter.get('/profile', userController.getProfile);
 
 userRouter.delete('/profile/delete', userController.deleteUser);

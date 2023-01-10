@@ -23,10 +23,7 @@ export class UserController {
 	login = async (req: Request, res: Response) => {
 		try {
 			const { username, password } = req.body;
-			const result: string | undefined = await this.userBusiness.login(
-				username,
-				password
-			);
+			const result = await this.userBusiness.login(username, password);
 
 			res.status(200).send({ token: result });
 		} catch (error: any) {
@@ -57,6 +54,7 @@ export class UserController {
 		try {
 			const token: string = req.headers.authorization as string;
 			const { currentPassword, newPassword } = req.body;
+
 			await this.userBusiness.editPassword(token, currentPassword, newPassword);
 
 			res.status(200).send('Password updated');

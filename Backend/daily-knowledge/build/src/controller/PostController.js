@@ -34,8 +34,8 @@ class PostController {
             try {
                 const token = req.headers.authorization;
                 const { postId, title, text, author, source, tags } = req.body;
-                const result = yield this.postBusiness.editPost(token, postId, title, text, author, source, tags);
-                res.status(201).send('Post edited');
+                yield this.postBusiness.editPost(token, postId, title, text, author, source, tags);
+                res.status(200).send('Post edited');
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {

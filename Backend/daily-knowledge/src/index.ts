@@ -19,9 +19,3 @@ const server = app.listen(port, () => {
 
 app.use(userRouter);
 app.use(postRouter);
-
-//follow tag
-//unfollow tag
-//follow author
-//unfollow author
-//get feed (follow tag and follow author together)

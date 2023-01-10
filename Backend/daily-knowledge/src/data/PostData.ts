@@ -1,3 +1,4 @@
+import { Post } from '@prisma/client';
 import { prismaClient } from './BaseDatabase';
 
 export class PostData {
