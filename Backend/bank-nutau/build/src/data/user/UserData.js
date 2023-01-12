@@ -13,18 +13,17 @@ exports.UserData = void 0;
 const BaseDatabase_1 = require("../BaseDatabase");
 class UserData {
     constructor() {
-        this.signup = (id, name, lastName, nickname, email, password, cpf, accountId) => __awaiter(this, void 0, void 0, function* () {
+        this.signup = (id, name, lastName, username, email, password, cpf) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield BaseDatabase_1.prismaClient.user.create({
                     data: {
                         id,
                         name,
                         last_name: lastName,
-                        nickname,
+                        username,
                         email,
                         password,
                         cpf,
-                        account_id: accountId,
                     },
                 });
             }
@@ -32,24 +31,66 @@ class UserData {
                 throw new Error(error.message);
             }
         });
-        this.getUser = (nickname, email, cpf) => __awaiter(this, void 0, void 0, function* () {
+        this.getUser = (word) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield BaseDatabase_1.prismaClient.user.findFirst({
                     where: {
                         OR: [
                             {
-                                nickname: nickname,
+                                id: word,
                             },
                             {
-                                email: email,
+                                username: word,
                             },
                             {
-                                cpf: cpf,
+                                email: word,
+                            },
+                            {
+                                cpf: word,
                             },
                         ],
                     },
                 });
                 return result;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getProfile = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const test = BaseDatabase_1.prismaClient.account.findUnique({
+                    where: { userId: id },
+                    select: {
+                        credit: true,
+                        debit: true,
+                    },
+                });
+                const result = BaseDatabase_1.prismaClient.user.findUnique({
+                    where: { id },
+                    select: {
+                        id: true,
+                        username: true,
+                        name: true,
+                        last_name: true,
+                        email: true,
+                        cpf: true,
+                    },
+                });
+                return result;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.editPassword = (id, newPassword) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield BaseDatabase_1.prismaClient.user.update({
+                    where: { id },
+                    data: {
+                        password: newPassword,
+                    },
+                });
             }
             catch (error) {
                 throw new Error(error.message);

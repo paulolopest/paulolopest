@@ -8,13 +8,45 @@ datasource db {
 }
 
 model User {
-  id         String  @id
+  id         String    @id
   name       String
   last_name  String
-  nickname   String  @unique
-  email      String  @unique
+  username   String    @unique
+  email      String    @unique
   password   String
-  cpf        String  @unique
-  account_id String
-  admin      Boolean @default(false)
+  cpf        String    @unique
+  created_at DateTime  @default(now())
+  Account    Account[]
+}
+
+model Account {
+  userId String @id @unique
+  credit Int    @default(1000)
+  debit  Int    @default(0)
+
+  User User @relation(fields: [userId], references: [id])
+
+  sends    Trasnfer[] @relation("sender")
+  receives Trasnfer[] @relation("receiver")
+}
+
+model Trasnfer {
+  id          String   @id
+  sender_id   String
+  receiver_id String
+  amount      Int
+  created_at  DateTime @default(now())
+
+  sender   Account @relation(name: "sender", fields: [sender_id], references: [userId])
+  receiver Account @relation(name: "receiver", fields: [receiver_id], references: [userId])
+}
+
+model Credit_Card {
+  id            String   @id
+  name          String   @default("Nutaú Card")
+  card_number   String   @unique
+  cvv           Int
+  card_owner    String
+  validate_date DateTime
+  created_at    DateTime @default(now())
 }

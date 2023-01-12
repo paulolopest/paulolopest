@@ -5,11 +5,10 @@ export class UserData {
 		id: string,
 		name: string,
 		lastName: string,
-		nickname: string,
+		username: string,
 		email: string,
 		password: string,
-		cpf: string,
-		accountId: string
+		cpf: string
 	) => {
 		try {
 			await prismaClient.user.create({
@@ -17,11 +16,10 @@ export class UserData {
 					id,
 					name,
 					last_name: lastName,
-					nickname,
+					username,
 					email,
 					password,
 					cpf,
-					account_id: accountId,
 				},
 			});
 		} catch (error: any) {
@@ -35,7 +33,10 @@ export class UserData {
 				where: {
 					OR: [
 						{
-							nickname: word,
+							id: word,
+						},
+						{
+							username: word,
 						},
 						{
 							email: word,
@@ -48,6 +49,47 @@ export class UserData {
 			});
 
 			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getProfile = async (id: string) => {
+		try {
+			const test = prismaClient.account.findUnique({
+				where: { userId: id },
+				select: {
+					credit: true,
+					debit: true,
+				},
+			});
+
+			const result = prismaClient.user.findUnique({
+				where: { id },
+				select: {
+					id: true,
+					username: true,
+					name: true,
+					last_name: true,
+					email: true,
+					cpf: true,
+				},
+			});
+
+			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	editPassword = async (id: string, newPassword: string) => {
+		try {
+			await prismaClient.user.update({
+				where: { id },
+				data: {
+					password: newPassword,
+				},
+			});
 		} catch (error: any) {
 			throw new Error(error.message);
 		}

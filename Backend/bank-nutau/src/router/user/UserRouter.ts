@@ -1,12 +1,16 @@
-import express, { Router } from 'express';
-import { UserBusiness } from '../../business/user/UserBusiness';
 import { UserController } from '../../controller/user/UserController';
-import { UserData } from '../../data/user/UserData';
+import { UserBusiness } from '../../business/user/UserBusiness';
+import { TokenManager } from '../../services/TokenManager';
+import { HashManager } from '../../services/HashManager';
 import { IdGenerator } from '../../services/IdGenerator';
+import { UserData } from '../../data/user/UserData';
+import express, { Router } from 'express';
 
 const userBusiness: UserBusiness = new UserBusiness(
 	new UserData(),
-	new IdGenerator()
+	new IdGenerator(),
+	new HashManager(),
+	new TokenManager()
 );
 
 const userController: UserController = new UserController(userBusiness);
@@ -14,3 +18,8 @@ const userController: UserController = new UserController(userBusiness);
 export const userRouter: Router = express.Router();
 
 userRouter.post('/signup', userController.signup);
+userRouter.post('/login', userController.login);
+
+userRouter.get('/profile', userController.getProfile);
+
+userRouter.put('/profile/edit-password', userController.editPassword);
