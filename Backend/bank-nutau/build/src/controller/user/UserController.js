@@ -16,16 +16,62 @@ class UserController {
         this.userBusiness = userBusiness;
         this.signup = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, lastName, nickname, email, password, cpf } = req.body;
-                yield this.userBusiness.signup(name, lastName, nickname, email, password, cpf);
+                const { name, lastName, username, email, password, cpf } = req.body;
+                yield this.userBusiness.signup(name, lastName, username, email, password, cpf);
                 res.status(201).send('Account created');
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {
-                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                    res.status(error.statusCode).send(error.message);
                 }
                 else {
-                    throw new Error(error.message);
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { email, password } = req.body;
+                const result = yield this.userBusiness.login(email, password);
+                res.status(200).send({ token: result });
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const result = yield this.userBusiness.getProfile(token);
+                res.status(200).send(result);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.editPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { currentPassword, newPassword } = req.body;
+                yield this.userBusiness.editPassword(token, currentPassword, newPassword);
+                res.status(200).send('Password updated');
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
                 }
             }
         });
