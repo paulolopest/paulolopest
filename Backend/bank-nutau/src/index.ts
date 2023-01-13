@@ -1,3 +1,4 @@
+import { creditCRouter } from './router/credit-card/CardRouter';
 import { userRouter } from './router/user/UserRouter';
 import express, { Express } from 'express';
 import cors from 'cors';
@@ -17,3 +18,4 @@ const server = app.listen(port, () => {
 });
 
 app.use(userRouter);
+app.use(creditCRouter);
