@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id         String    @id
-  name       String
-  last_name  String
-  username   String    @unique
-  email      String    @unique
-  password   String
-  cpf        String    @unique
-  created_at DateTime  @default(now())
-  Account    Account[]
+  id          String        @id
+  name        String
+  last_name   String
+  username    String        @unique
+  email       String        @unique
+  password    String
+  cpf         String        @unique
+  created_at  DateTime      @default(now())
+  Account     Account[]
+  Credit_Card Credit_Card[]
 }
 
 model Account {
@@ -43,10 +44,13 @@ model Trasnfer {
 
 model Credit_Card {
   id            String   @id
+  user_id       String   @unique
   name          String   @default("Nutaú Card")
   card_number   String   @unique
   cvv           Int
   card_owner    String
-  validate_date DateTime
+  validate_date String
   created_at    DateTime @default(now())
+
+  User User @relation(fields: [user_id], references: [id])
 }
