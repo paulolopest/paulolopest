@@ -3,6 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const TransferenceRouter_1 = require("./router/transference/TransferenceRouter");
+const CardRouter_1 = require("./router/card/CardRouter");
 const UserRouter_1 = require("./router/user/UserRouter");
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
@@ -19,4 +21,6 @@ const server = app.listen(port, () => {
     }
 });
 app.use(UserRouter_1.userRouter);
+app.use(CardRouter_1.cardRouter);
+app.use(TransferenceRouter_1.transferenceRouter);
 //# sourceMappingURL=index.js.map

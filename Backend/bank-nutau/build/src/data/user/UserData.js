@@ -26,6 +26,11 @@ class UserData {
                         cpf,
                     },
                 });
+                yield BaseDatabase_1.prismaClient.account.create({
+                    data: {
+                        user_id: id,
+                    },
+                });
             }
             catch (error) {
                 throw new Error(error.message);
@@ -57,16 +62,22 @@ class UserData {
                 throw new Error(error.message);
             }
         });
-        this.getProfile = (id) => __awaiter(this, void 0, void 0, function* () {
+        this.getAccount = (id) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const test = BaseDatabase_1.prismaClient.account.findUnique({
-                    where: { userId: id },
-                    select: {
-                        credit: true,
-                        debit: true,
+                const result = BaseDatabase_1.prismaClient.account.findUnique({
+                    where: {
+                        user_id: id,
                     },
                 });
-                const result = BaseDatabase_1.prismaClient.user.findUnique({
+                return result;
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.getProfile = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const result = BaseDatabase_1.prismaClient.user.findFirst({
                     where: { id },
                     select: {
                         id: true,
@@ -75,6 +86,12 @@ class UserData {
                         last_name: true,
                         email: true,
                         cpf: true,
+                        Account: {
+                            select: {
+                                credit: true,
+                                debit: true,
+                            },
+                        },
                     },
                 });
                 return result;

@@ -1,5 +1,5 @@
 import { AuthenticationData } from '../../models/AuthenticationData';
-import { CardData } from '../../data/credit-card/CardData';
+import { CardData } from '../../data/card/CardData';
 import { TokenManager } from '../../services/TokenManager';
 import { IdGenerator } from '../../services/IdGenerator';
 import { CustomError } from '../../models/CustomError';
@@ -100,6 +100,69 @@ export class CardBusiness {
 			const user = this.tokenManager.getTokenData(token);
 
 			await this.cardData.deleteCard(user.id);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	//
+
+	withdrawMoney = async (token: string, amount: number) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!amount) {
+				throw new CustomError(400, 'Enter a value');
+			}
+
+			const user = this.tokenManager.getTokenData(token);
+			if (!user) {
+				throw new CustomError(404, 'User fatal error, login again');
+			}
+
+			const balance = await this.userData.getAccount(user.id);
+			if (!balance) {
+				throw new CustomError(404, 'User fatal error, login again');
+			}
+
+			if (amount > balance.debit) {
+				throw new CustomError(401, 'Amount greater than your balance');
+			}
+
+			const historyId: string = this.idGenerator.generate();
+
+			await this.cardData.withdrawMoney(user.id, amount, historyId);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	depositMoney = async (token: string, amount: number) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!amount) {
+				throw new CustomError(400, 'Enter a value');
+			}
+
+			const user = this.tokenManager.getTokenData(token);
+			if (!user) {
+				throw new CustomError(404, 'User fatal error, login again');
+			}
+
+			const historyId: string = this.idGenerator.generate();
+
+			await this.cardData.depositMoney(user.id, amount, historyId);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
