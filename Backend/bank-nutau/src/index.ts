@@ -1,4 +1,5 @@
-import { creditCRouter } from './router/credit-card/CardRouter';
+import { transferenceRouter } from './router/transference/TransferenceRouter';
+import { cardRouter } from './router/card/CardRouter';
 import { userRouter } from './router/user/UserRouter';
 import express, { Express } from 'express';
 import cors from 'cors';
@@ -18,4 +19,5 @@ const server = app.listen(port, () => {
 });
 
 app.use(userRouter);
-app.use(creditCRouter);
+app.use(cardRouter);
+app.use(transferenceRouter);

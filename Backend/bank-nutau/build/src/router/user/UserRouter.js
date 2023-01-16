@@ -17,5 +17,5 @@ exports.userRouter = express_1.default.Router();
 exports.userRouter.post('/signup', userController.signup);
 exports.userRouter.post('/login', userController.login);
 exports.userRouter.get('/profile', userController.getProfile);
-exports.userRouter.purge('/profile/edit-password', userController.editPassword);
+exports.userRouter.put('/profile/edit-password', userController.editPassword);
 //# sourceMappingURL=UserRouter.js.map

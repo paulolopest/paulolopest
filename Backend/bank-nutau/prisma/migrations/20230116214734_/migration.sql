@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('EXIT', 'ENTRANCE', 'TRANSFERENCE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -14,22 +17,33 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Account" (
-    "userId" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "credit" INTEGER NOT NULL DEFAULT 1000,
-    "debit" INTEGER NOT NULL DEFAULT 0,
+    "debit" INTEGER NOT NULL DEFAULT 1000,
 
-    CONSTRAINT "Account_pkey" PRIMARY KEY ("userId")
+    CONSTRAINT "Account_pkey" PRIMARY KEY ("user_id")
 );
 
 -- CreateTable
-CREATE TABLE "Trasnfer" (
+CREATE TABLE "Account_history" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "status" "Status" NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Account_history_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Transference" (
     "id" TEXT NOT NULL,
     "sender_id" TEXT NOT NULL,
     "receiver_id" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Trasnfer_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Transference_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -56,7 +70,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "User_cpf_key" ON "User"("cpf");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Account_userId_key" ON "Account"("userId");
+CREATE UNIQUE INDEX "Account_user_id_key" ON "Account"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Credit_Card_user_id_key" ON "Credit_Card"("user_id");
@@ -65,13 +79,16 @@ CREATE UNIQUE INDEX "Credit_Card_user_id_key" ON "Credit_Card"("user_id");
 CREATE UNIQUE INDEX "Credit_Card_card_number_key" ON "Credit_Card"("card_number");
 
 -- AddForeignKey
-ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Account" ADD CONSTRAINT "Account_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Trasnfer" ADD CONSTRAINT "Trasnfer_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "Account"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Account_history" ADD CONSTRAINT "Account_history_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "Account"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Trasnfer" ADD CONSTRAINT "Trasnfer_receiver_id_fkey" FOREIGN KEY ("receiver_id") REFERENCES "Account"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Transference" ADD CONSTRAINT "Transference_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "Account"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transference" ADD CONSTRAINT "Transference_receiver_id_fkey" FOREIGN KEY ("receiver_id") REFERENCES "Account"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Credit_Card" ADD CONSTRAINT "Credit_Card_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

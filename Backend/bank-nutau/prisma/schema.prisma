@@ -21,25 +21,48 @@ model User {
 }
 
 model Account {
-  userId String @id @unique
-  credit Int    @default(1000)
-  debit  Int    @default(0)
+  user_id String @id @unique
+  credit  Int    @default(1000)
+  debit   Int    @default(1000)
 
-  User User @relation(fields: [userId], references: [id])
+  User User @relation(fields: [user_id], references: [id])
 
-  sends    Trasnfer[] @relation("sender")
-  receives Trasnfer[] @relation("receiver")
+  sends           Transference[]    @relation("sender")
+  receives        Transference[]    @relation("receiver")
+  Account_history Account_history[]
 }
 
-model Trasnfer {
+enum Status {
+  EXIT
+  ENTRANCE
+  TRANSFERENCE
+}
+
+enum Type {
+  CREDIT
+  DEBIT
+}
+
+model Account_history {
+  id         String   @id
+  user_id    String
+  amount     Int
+  type       Type
+  status     Status
+  created_at DateTime @default(now())
+
+  Account Account @relation(fields: [user_id], references: [user_id])
+}
+
+model Transference {
   id          String   @id
   sender_id   String
   receiver_id String
   amount      Int
   created_at  DateTime @default(now())
 
-  sender   Account @relation(name: "sender", fields: [sender_id], references: [userId])
-  receiver Account @relation(name: "receiver", fields: [receiver_id], references: [userId])
+  sender   Account @relation(name: "sender", fields: [sender_id], references: [user_id])
+  receiver Account @relation(name: "receiver", fields: [receiver_id], references: [user_id])
 }
 
 model Credit_Card {

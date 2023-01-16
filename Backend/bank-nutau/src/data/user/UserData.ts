@@ -22,6 +22,12 @@ export class UserData {
 					cpf,
 				},
 			});
+
+			await prismaClient.account.create({
+				data: {
+					user_id: id,
+				},
+			});
 		} catch (error: any) {
 			throw new Error(error.message);
 		}
@@ -54,17 +60,23 @@ export class UserData {
 		}
 	};
 
-	getProfile = async (id: string) => {
+	getAccount = async (id: string) => {
 		try {
-			const test = prismaClient.account.findUnique({
-				where: { userId: id },
-				select: {
-					credit: true,
-					debit: true,
+			const result = prismaClient.account.findUnique({
+				where: {
+					user_id: id,
 				},
 			});
 
-			const result = prismaClient.user.findUnique({
+			return result;
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	getProfile = async (id: string) => {
+		try {
+			const result = prismaClient.user.findFirst({
 				where: { id },
 				select: {
 					id: true,
@@ -73,6 +85,12 @@ export class UserData {
 					last_name: true,
 					email: true,
 					cpf: true,
+					Account: {
+						select: {
+							credit: true,
+							debit: true,
+						},
+					},
 				},
 			});
 
