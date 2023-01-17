@@ -25,7 +25,7 @@ model Account {
   credit  Int    @default(1000)
   debit   Int    @default(1000)
 
-  User User @relation(fields: [user_id], references: [id])
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   sends           Transference[]    @relation("sender")
   receives        Transference[]    @relation("receiver")
@@ -51,7 +51,7 @@ model Account_history {
   status     Status
   created_at DateTime @default(now())
 
-  Account Account @relation(fields: [user_id], references: [user_id])
+  Account Account @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Transference {
@@ -61,8 +61,8 @@ model Transference {
   amount      Int
   created_at  DateTime @default(now())
 
-  sender   Account @relation(name: "sender", fields: [sender_id], references: [user_id])
-  receiver Account @relation(name: "receiver", fields: [receiver_id], references: [user_id])
+  sender   Account @relation(name: "sender", fields: [sender_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  receiver Account @relation(name: "receiver", fields: [receiver_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Credit_Card {
@@ -75,5 +75,5 @@ model Credit_Card {
   validate_date String
   created_at    DateTime @default(now())
 
-  User User @relation(fields: [user_id], references: [id])
+  User User @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

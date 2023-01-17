@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserBusiness = void 0;
 const CustomError_1 = require("../../models/CustomError");
 class UserBusiness {
-    constructor(userData, idGenerator, hashManager, tokenManager) {
-        this.userData = userData;
+    constructor(tokenManager, idGenerator, hashManager, userData) {
+        this.tokenManager = tokenManager;
         this.idGenerator = idGenerator;
         this.hashManager = hashManager;
-        this.tokenManager = tokenManager;
+        this.userData = userData;
         this.signup = (name, lastName, username, email, password, cpf) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!name) {
@@ -68,15 +68,15 @@ class UserBusiness {
                 }
             }
         });
-        this.login = (email, password) => __awaiter(this, void 0, void 0, function* () {
+        this.login = (password, word) => __awaiter(this, void 0, void 0, function* () {
             try {
-                if (!email) {
-                    throw new CustomError_1.CustomError(400, 'Enter an email');
-                }
                 if (!password) {
                     throw new CustomError_1.CustomError(400, 'Enter a password');
                 }
-                const user = yield this.userData.getUser(email);
+                if (!word) {
+                    throw new CustomError_1.CustomError(400, 'Enter an email or username');
+                }
+                const user = yield this.userData.getUser(word);
                 if (!user) {
                     throw new CustomError_1.CustomError(401, 'Account not found');
                 }
@@ -114,6 +114,34 @@ class UserBusiness {
                 }
             }
         });
+        this.editProfile = (token, email, username) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                if (!email && username == '') {
+                    throw new CustomError_1.CustomError(400, 'All inputs null');
+                }
+                const verifyUsername = yield this.userData.getUser(username);
+                if (verifyUsername) {
+                    throw new CustomError_1.CustomError(401, 'username already in use');
+                }
+                const verifyEmail = yield this.userData.getUser(email);
+                if (verifyEmail) {
+                    throw new CustomError_1.CustomError(401, 'Email already registered');
+                }
+                const user = this.tokenManager.getTokenData(token);
+                yield this.userData.editProfile(user.id, email, username);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
+                }
+            }
+        });
         this.editPassword = (token, currentPassword, newPassword) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!token) {
@@ -139,6 +167,23 @@ class UserBusiness {
                 }
                 const hashPassword = yield this.hashManager.hash(newPassword);
                 yield this.userData.editPassword(tokenData.id, hashPassword);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
+                }
+            }
+        });
+        this.deleteUser = (token) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                const user = this.tokenManager.getTokenData(token);
+                yield this.userData.deleteUser(user.id);
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {

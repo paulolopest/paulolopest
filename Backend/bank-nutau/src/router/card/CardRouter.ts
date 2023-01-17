@@ -1,8 +1,8 @@
 import { CardController } from '../../controller/card/CardController';
 import { CardBusiness } from '../../business/card/CardBusiness';
-import { CardData } from '../../data/card/CardData';
 import { TokenManager } from '../../services/TokenManager';
 import { IdGenerator } from '../../services/IdGenerator';
+import { CardData } from '../../data/card/CardData';
 import { UserData } from '../../data/user/UserData';
 import express, { Router } from 'express';
 

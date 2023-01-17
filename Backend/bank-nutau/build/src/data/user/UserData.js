@@ -100,6 +100,20 @@ class UserData {
                 throw new Error(error.message);
             }
         });
+        this.editProfile = (id, email, username) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield BaseDatabase_1.prismaClient.user.update({
+                    where: { id },
+                    data: {
+                        username,
+                        email,
+                    },
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
         this.editPassword = (id, newPassword) => __awaiter(this, void 0, void 0, function* () {
             try {
                 yield BaseDatabase_1.prismaClient.user.update({
@@ -107,6 +121,16 @@ class UserData {
                     data: {
                         password: newPassword,
                     },
+                });
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield BaseDatabase_1.prismaClient.user.delete({
+                    where: { id },
                 });
             }
             catch (error) {

@@ -1,9 +1,10 @@
 import { AuthenticationData } from '../../models/AuthenticationData';
-import { CardData } from '../../data/card/CardData';
 import { TokenManager } from '../../services/TokenManager';
 import { IdGenerator } from '../../services/IdGenerator';
 import { CustomError } from '../../models/CustomError';
 import { UserData } from '../../data/user/UserData';
+import { CardData } from '../../data/card/CardData';
+import { Account, User } from '@prisma/client';
 
 export class CardBusiness {
 	constructor(
@@ -22,12 +23,17 @@ export class CardBusiness {
 			const tokenData: AuthenticationData =
 				this.tokenManager.getTokenData(token);
 
-			const user = await this.userData.getUser(tokenData.id);
+			const card = await this.cardData.getMyCard(tokenData.id);
+			if (card) {
+				throw new CustomError(401, 'You already have a card');
+			}
+
+			const user: User | null = await this.userData.getUser(tokenData.id);
 			if (!user) {
 				throw new CustomError(404, 'User fatal error');
 			}
 
-			const id = this.idGenerator.generate();
+			const id: string = this.idGenerator.generate();
 
 			function generateRan(number: number) {
 				var max = number;
@@ -42,15 +48,15 @@ export class CardBusiness {
 				return random.join('');
 			}
 
-			const cardNumber = [generateRan(9), generateRan(7)]
+			const cardNumber: string = [generateRan(9), generateRan(7)]
 				.join('')
 				.replace('0', '5');
 
 			const cvv = Number(generateRan(3).replace('0', '7'));
-			const cardOwner = `${user.name} ${user.last_name}`;
-			const date = new Date();
+			const cardOwner: string = `${user.name} ${user.last_name}`;
+			const date: Date = new Date();
 
-			const validateDate = `${date.getUTCMonth() + 1}/${
+			const validateDate: string = `${date.getUTCMonth() + 1}/${
 				date.getFullYear() + 10
 			}`;
 
@@ -77,7 +83,8 @@ export class CardBusiness {
 				throw new CustomError(401, 'Login first');
 			}
 
-			const tokenData = this.tokenManager.getTokenData(token);
+			const tokenData: AuthenticationData =
+				this.tokenManager.getTokenData(token);
 
 			const result = await this.cardData.getMyCard(tokenData.id);
 
@@ -97,7 +104,7 @@ export class CardBusiness {
 				throw new CustomError(401, 'Login first');
 			}
 
-			const user = this.tokenManager.getTokenData(token);
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
 
 			await this.cardData.deleteCard(user.id);
 		} catch (error: any) {
@@ -120,12 +127,12 @@ export class CardBusiness {
 				throw new CustomError(400, 'Enter a value');
 			}
 
-			const user = this.tokenManager.getTokenData(token);
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
 			if (!user) {
 				throw new CustomError(404, 'User fatal error, login again');
 			}
 
-			const balance = await this.userData.getAccount(user.id);
+			const balance: Account | null = await this.userData.getAccount(user.id);
 			if (!balance) {
 				throw new CustomError(404, 'User fatal error, login again');
 			}
@@ -155,7 +162,7 @@ export class CardBusiness {
 				throw new CustomError(400, 'Enter a value');
 			}
 
-			const user = this.tokenManager.getTokenData(token);
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
 			if (!user) {
 				throw new CustomError(404, 'User fatal error, login again');
 			}
