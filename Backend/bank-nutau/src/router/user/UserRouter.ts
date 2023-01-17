@@ -7,10 +7,10 @@ import { UserData } from '../../data/user/UserData';
 import express, { Router } from 'express';
 
 const userBusiness: UserBusiness = new UserBusiness(
-	new UserData(),
+	new TokenManager(),
 	new IdGenerator(),
 	new HashManager(),
-	new TokenManager()
+	new UserData()
 );
 
 const userController: UserController = new UserController(userBusiness);
@@ -23,3 +23,6 @@ userRouter.post('/login', userController.login);
 userRouter.get('/profile', userController.getProfile);
 
 userRouter.put('/profile/edit-password', userController.editPassword);
+userRouter.put('/profile/edit-profile', userController.editProfile);
+
+userRouter.delete('/profile/delete', userController.deleteUser);

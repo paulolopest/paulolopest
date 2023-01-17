@@ -23,6 +23,10 @@ class CardBusiness {
                     throw new CustomError_1.CustomError(401, 'Login first');
                 }
                 const tokenData = this.tokenManager.getTokenData(token);
+                const card = yield this.cardData.getMyCard(tokenData.id);
+                if (card) {
+                    throw new CustomError_1.CustomError(401, 'You already have a card');
+                }
                 const user = yield this.userData.getUser(tokenData.id);
                 if (!user) {
                     throw new CustomError_1.CustomError(404, 'User fatal error');

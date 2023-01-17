@@ -30,6 +30,37 @@ class TransferenceController {
                 }
             }
         });
+        this.debitTransference = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { amount, username } = req.body;
+                yield this.transferenceBusiness.debitTransference(token, amount, username);
+                res.status(201).send(`$${amount} transferred to ${username}`);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.getTransferenceHistory = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const result = yield this.transferenceBusiness.getTransferenceHistory(token);
+                res.status(200).send(result);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
     }
 }
 exports.TransferenceController = TransferenceController;

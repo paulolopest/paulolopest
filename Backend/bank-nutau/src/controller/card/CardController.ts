@@ -24,6 +24,7 @@ export class CardController {
 	getMyCard = async (req: Request, res: Response) => {
 		try {
 			const token: string = req.headers.authorization as string;
+
 			const result = await this.cardBusiness.getMyCard(token);
 
 			res.status(200).send(result);

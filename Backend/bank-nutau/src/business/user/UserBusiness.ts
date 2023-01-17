@@ -8,10 +8,10 @@ import { User } from '@prisma/client';
 
 export class UserBusiness {
 	constructor(
-		private userData: UserData,
+		private tokenManager: TokenManager,
 		private idGenerator: IdGenerator,
 		private hashManager: HashManager,
-		private tokenManager: TokenManager
+		private userData: UserData
 	) {}
 
 	signup = async (
@@ -88,16 +88,16 @@ export class UserBusiness {
 		}
 	};
 
-	login = async (email: string, password: string) => {
+	login = async (password: string, word: string) => {
 		try {
-			if (!email) {
-				throw new CustomError(400, 'Enter an email');
-			}
 			if (!password) {
 				throw new CustomError(400, 'Enter a password');
 			}
+			if (!word) {
+				throw new CustomError(400, 'Enter an email or username');
+			}
 
-			const user: User | null = await this.userData.getUser(email);
+			const user: User | null = await this.userData.getUser(word);
 			if (!user) {
 				throw new CustomError(401, 'Account not found');
 			}
@@ -110,7 +110,7 @@ export class UserBusiness {
 				throw new CustomError(401, 'Incorrect password');
 			}
 
-			const token = this.tokenManager.generate({ id: user.id });
+			const token: string = this.tokenManager.generate({ id: user.id });
 
 			return token;
 		} catch (error: any) {
@@ -134,6 +134,40 @@ export class UserBusiness {
 			const result = await this.userData.getProfile(tokenData.id);
 
 			return result;
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	editProfile = async (token: string, email?: string, username?: string) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+			if (!email && username == '') {
+				throw new CustomError(400, 'All inputs null');
+			}
+
+			const verifyUsername: User | null = await this.userData.getUser(
+				username as string
+			);
+			if (verifyUsername) {
+				throw new CustomError(401, 'username already in use');
+			}
+
+			const verifyEmail: User | null = await this.userData.getUser(
+				email as string
+			);
+			if (verifyEmail) {
+				throw new CustomError(401, 'Email already registered');
+			}
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
+
+			await this.userData.editProfile(user.id, email, username);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);
@@ -185,6 +219,24 @@ export class UserBusiness {
 			const hashPassword: string = await this.hashManager.hash(newPassword);
 
 			await this.userData.editPassword(tokenData.id, hashPassword);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				throw new CustomError(error.statusCode, error.message);
+			} else {
+				throw new Error(error.message);
+			}
+		}
+	};
+
+	deleteUser = async (token: string) => {
+		try {
+			if (!token) {
+				throw new CustomError(401, 'Login first');
+			}
+
+			const user: AuthenticationData = this.tokenManager.getTokenData(token);
+
+			await this.userData.deleteUser(user.id);
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				throw new CustomError(error.statusCode, error.message);

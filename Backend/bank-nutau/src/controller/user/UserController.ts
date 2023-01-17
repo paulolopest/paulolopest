@@ -30,8 +30,9 @@ export class UserController {
 
 	login = async (req: Request, res: Response) => {
 		try {
-			const { email, password } = req.body;
-			const result: string = await this.userBusiness.login(email, password);
+			const { word, password } = req.body;
+
+			const result: string = await this.userBusiness.login(password, word);
 
 			res.status(200).send({ token: result });
 		} catch (error: any) {
@@ -46,9 +47,27 @@ export class UserController {
 	getProfile = async (req: Request, res: Response) => {
 		try {
 			const token: string = req.headers.authorization as string;
+
 			const result = await this.userBusiness.getProfile(token);
 
 			res.status(200).send(result);
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
+	editProfile = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+			const { email, username } = req.body;
+
+			await this.userBusiness.editProfile(token, email, username);
+
+			res.status(200).send('Account update');
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				res.status(error.statusCode).send(error.message);
@@ -66,6 +85,22 @@ export class UserController {
 			await this.userBusiness.editPassword(token, currentPassword, newPassword);
 
 			res.status(200).send('Password updated');
+		} catch (error: any) {
+			if (error instanceof CustomError) {
+				res.status(error.statusCode).send(error.message);
+			} else {
+				res.status(404).send(error.message);
+			}
+		}
+	};
+
+	deleteUser = async (req: Request, res: Response) => {
+		try {
+			const token: string = req.headers.authorization as string;
+
+			await this.userBusiness.deleteUser(token);
+
+			res.status(200).send('Account deleted');
 		} catch (error: any) {
 			if (error instanceof CustomError) {
 				res.status(error.statusCode).send(error.message);

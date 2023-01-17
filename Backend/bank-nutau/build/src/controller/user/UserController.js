@@ -31,8 +31,8 @@ class UserController {
         });
         this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, password } = req.body;
-                const result = yield this.userBusiness.login(email, password);
+                const { word, password } = req.body;
+                const result = yield this.userBusiness.login(password, word);
                 res.status(200).send({ token: result });
             }
             catch (error) {
@@ -59,12 +59,43 @@ class UserController {
                 }
             }
         });
+        this.editProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                const { email, username } = req.body;
+                yield this.userBusiness.editProfile(token, email, username);
+                res.status(200).send('Account update');
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
         this.editPassword = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.headers.authorization;
                 const { currentPassword, newPassword } = req.body;
                 yield this.userBusiness.editPassword(token, currentPassword, newPassword);
                 res.status(200).send('Password updated');
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    res.status(error.statusCode).send(error.message);
+                }
+                else {
+                    res.status(404).send(error.message);
+                }
+            }
+        });
+        this.deleteUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = req.headers.authorization;
+                yield this.userBusiness.deleteUser(token);
+                res.status(200).send('Account deleted');
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {

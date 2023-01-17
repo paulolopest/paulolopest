@@ -12,11 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TransferenceBusiness = void 0;
 const CustomError_1 = require("../../models/CustomError");
 class TransferenceBusiness {
-    constructor(transferenceData, tokenManager, idGenerator, cardData, userData) {
+    constructor(transferenceData, tokenManager, idGenerator, userData) {
         this.transferenceData = transferenceData;
         this.tokenManager = tokenManager;
         this.idGenerator = idGenerator;
-        this.cardData = cardData;
         this.userData = userData;
         this.creditTransference = (token, amount, username) => __awaiter(this, void 0, void 0, function* () {
             try {
@@ -27,19 +26,83 @@ class TransferenceBusiness {
                     throw new CustomError_1.CustomError(400, 'Enter a value');
                 }
                 const tokenData = this.tokenManager.getTokenData(token);
+                const verify = yield this.userData.getAccount(tokenData.id);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(404, 'User fatal error, login again');
+                }
+                if (amount > verify.credit) {
+                    throw new CustomError_1.CustomError(401, 'You have not this value');
+                }
                 const sender = yield this.userData.getUser(tokenData.id);
                 if (!sender) {
                     throw new CustomError_1.CustomError(401, 'User fatal error, login again');
+                }
+                if (sender.username === username) {
+                    throw new CustomError_1.CustomError(409, 'You can not transfer to yourself');
                 }
                 const receiver = yield this.userData.getUser(username);
                 if (!receiver) {
                     throw new CustomError_1.CustomError(401, 'User not found');
                 }
-                if ((receiver.username = username)) {
-                    throw new CustomError_1.CustomError(409, 'You can not transfer to yourself');
-                }
                 const transferenceId = this.idGenerator.generate();
                 yield this.transferenceData.creditTransference(transferenceId, sender.id, receiver.id, amount);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
+                }
+            }
+        });
+        this.debitTransference = (token, amount, username) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                if (!amount) {
+                    throw new CustomError_1.CustomError(400, 'Enter a value');
+                }
+                const tokenData = this.tokenManager.getTokenData(token);
+                const verify = yield this.userData.getAccount(tokenData.id);
+                if (!verify) {
+                    throw new CustomError_1.CustomError(404, 'User fatal error, login again');
+                }
+                if (amount > verify.debit) {
+                    throw new CustomError_1.CustomError(401, 'You have not this value');
+                }
+                const sender = yield this.userData.getUser(tokenData.id);
+                if (!sender) {
+                    throw new CustomError_1.CustomError(401, 'User fatal error, login again');
+                }
+                if (sender.username === username) {
+                    throw new CustomError_1.CustomError(409, 'You can not transfer to yourself');
+                }
+                const receiver = yield this.userData.getUser(username);
+                if (!receiver) {
+                    throw new CustomError_1.CustomError(401, 'User not found');
+                }
+                const transferenceId = this.idGenerator.generate();
+                yield this.transferenceData.debitTransference(transferenceId, sender.id, receiver.id, amount);
+            }
+            catch (error) {
+                if (error instanceof CustomError_1.CustomError) {
+                    throw new CustomError_1.CustomError(error.statusCode, error.message);
+                }
+                else {
+                    throw new Error(error.message);
+                }
+            }
+        });
+        this.getTransferenceHistory = (token, filter) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!token) {
+                    throw new CustomError_1.CustomError(401, 'Login first');
+                }
+                const user = this.tokenManager.getTokenData(token);
+                const result = yield this.transferenceData.getTransferenceHistory(user.id);
+                return result;
             }
             catch (error) {
                 if (error instanceof CustomError_1.CustomError) {

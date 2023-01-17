@@ -9,11 +9,12 @@ const TransferenceBusiness_1 = require("../../business/transference/Transference
 const TransferenceData_1 = require("../../data/transference/TransferenceData");
 const TokenManager_1 = require("../../services/TokenManager");
 const IdGenerator_1 = require("../../services/IdGenerator");
-const CardData_1 = require("../../data/card/CardData");
 const UserData_1 = require("../../data/user/UserData");
 const express_1 = __importDefault(require("express"));
-const transferenceBusiness = new TransferenceBusiness_1.TransferenceBusiness(new TransferenceData_1.TransferenceData(), new TokenManager_1.TokenManager(), new IdGenerator_1.IdGenerator(), new CardData_1.CardData(), new UserData_1.UserData());
+const transferenceBusiness = new TransferenceBusiness_1.TransferenceBusiness(new TransferenceData_1.TransferenceData(), new TokenManager_1.TokenManager(), new IdGenerator_1.IdGenerator(), new UserData_1.UserData());
 const transferenceController = new TransferenceController_1.TransferenceController(transferenceBusiness);
 exports.transferenceRouter = express_1.default.Router();
 exports.transferenceRouter.post('/transference/credit', transferenceController.creditTransference);
+exports.transferenceRouter.post('/transference/debit', transferenceController.debitTransference);
+exports.transferenceRouter.get('/profile/transference', transferenceController.getTransferenceHistory);
 //# sourceMappingURL=TransferenceRouter.js.map

@@ -100,6 +100,20 @@ export class UserData {
 		}
 	};
 
+	editProfile = async (id: string, email?: string, username?: string) => {
+		try {
+			await prismaClient.user.update({
+				where: { id },
+				data: {
+					username,
+					email,
+				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
 	editPassword = async (id: string, newPassword: string) => {
 		try {
 			await prismaClient.user.update({
@@ -107,6 +121,16 @@ export class UserData {
 				data: {
 					password: newPassword,
 				},
+			});
+		} catch (error: any) {
+			throw new Error(error.message);
+		}
+	};
+
+	deleteUser = async (id: string) => {
+		try {
+			await prismaClient.user.delete({
+				where: { id },
 			});
 		} catch (error: any) {
 			throw new Error(error.message);
