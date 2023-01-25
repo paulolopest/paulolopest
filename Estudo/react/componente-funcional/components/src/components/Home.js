@@ -1,8 +1,9 @@
 import React from 'react'
+import Title from './Title'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <Title name="Home"/>
   )
 }
 
