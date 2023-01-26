@@ -1,5 +1,6 @@
 import React from 'react'
 import ProductsCard from './ProductsCard'
+import Title from '../Title';
 
 const ProductsPage = () => {
     const products = [
@@ -9,6 +10,7 @@ const ProductsPage = () => {
 
     return (
         <div>
+            <Title name="Products"/>
             {products.map((item) => {
                 return (
                     <ProductsCard name = {item.name} propriety = {item.propriety}/>
