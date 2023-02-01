@@ -5,7 +5,7 @@ import Product from "./components/exercicio/Produto";
 // function App() {
 
 //   const [count, setCount] = React.useState(0)
-  
+
 //   React.useEffect(() => {
 //     console.log("Esta fora")
 //   })
@@ -57,12 +57,12 @@ const App = () => {
   const [product, setProduct] = React.useState(null)
 
   React.useEffect(() => {
-    if(product != null) window.localStorage.setItem("product", product)
+    if (product != null) window.localStorage.setItem("product", product)
   }, [product])
 
   React.useEffect(() => {
     const localProduct = window.localStorage.getItem("product")
-    if(localProduct) setProduct(localProduct)
+    if (localProduct) setProduct(localProduct)
   }, [])
 
 
@@ -77,7 +77,7 @@ const App = () => {
     <div>
       <h1>Preference: {product}</h1>
       {product && (
-        <Product product={product}/>
+        <Product product={product} />
       )}
       <button onClick={updateProduct}>Smartphone</button>
       <button onClick={updateProduct}>Notebook</button>
