@@ -14,7 +14,7 @@ export const GlobalStorage = ({ children }) => {
         setShow(false)
     }, [show])
 
-    const cleanData = () => {
+    const cleanData = () => {   
         setData(null)
     }
 

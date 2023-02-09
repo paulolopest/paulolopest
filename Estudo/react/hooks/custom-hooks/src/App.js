@@ -19,7 +19,7 @@ const App = () => {
         <ul>
           {data.map((product) => {
             return (
-              <div style={{ border: "1px solid black", width: "150px", margin: "5px" }}>
+              <div key={product.id} style={{ border: "1px solid black", width: "150px", margin: "5px" }}>
                 <p>{product.nome}</p>
                 <p>R$ {product.preco}</p>
               </div>
