@@ -1,10 +1,10 @@
 import React from 'react'
-import Exercise from './checkbox/Exercise'
+import CheckBoxIndex from './components/checkbox/CheckBoxIndex'
 
 const App = () => {
   return (
     <div>
-      <Exercise />
+      <CheckBoxIndex />
     </div>
   )
 }
