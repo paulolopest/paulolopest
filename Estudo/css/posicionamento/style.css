@@ -1,0 +1,10 @@
+span {
+    background-color: lightblue;
+    padding: 20px 50px;
+    margin: 10px 20px 40px 15px;
+}
+
+span {
+    border: 10px solid black;
+    border-width: 10px 25px 2px 15px;
+}
