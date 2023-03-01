@@ -1,0 +1,63 @@
+body {
+	margin: 40px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+	display: grid;
+	gap: 20px;
+	grid-template-columns: repeat(2, 1fr);
+}
+
+.price {
+	background-color: #ddd;
+	padding: 5px 10px;
+	border-radius: 4px;
+}
+
+.description {
+	grid-column: 1/-1;
+}
+
+.title {
+	grid-column: 1/-1;
+}
+
+.info {
+	display: grid;
+	place-self: start;
+	place-items: start;
+	grid-column: 2/-1;
+	gap: 40px;
+}
+/* Others styles */
+
+img {
+	max-width: 100%;
+	border-radius: 4px;
+	grid-column: 1;
+}
+
+h1,
+p {
+	margin: 0px;
+}
+
+h1 {
+	font-size: 48px;
+	line-height: 1;
+}
+
+p,
+span {
+	font-size: 20px;
+}
+
+a {
+	color: white;
+	background-color: #222;
+	text-decoration: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	font-size: 20px;
+}
