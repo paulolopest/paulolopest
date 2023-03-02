@@ -1,0 +1,20 @@
+<svg width="100%" height="100%">
+  <!-- tree trunk -->
+  <rect x="180" y="300" width="40" height="200" fill="#4C2F27" />
+
+  <!-- branches -->
+  <path d="M200 200 Q170 220 160 260" stroke="#4C2F27" stroke-width="10" fill="none" />
+  <path d="M200 200 Q230 220 240 260" stroke="#4C2F27" stroke-width="10" fill="none" />
+  <path d="M200 280 Q170 300 150 350" stroke="#4C2F27" stroke-width="10" fill="none" />
+  <path d="M200 280 Q230 300 250 350" stroke="#4C2F27" stroke-width="10" fill="none" />
+
+  <!-- leaves -->
+  <circle cx="170" cy="180" r="50" fill="#238823" />
+  <circle cx="210" cy="200" r="60" fill="#238823" />
+  <circle cx="180" cy="240" r="70" fill="#238823" />
+  <circle cx="160" cy="290" r="80" fill="#238823" />
+  <circle cx="220" cy="290" r="70" fill="#238823" />
+  <circle cx="240" cy="240" r="60" fill="#238823" />
+  <circle cx="190" cy="320" r="50" fill="#238823" />
+  <circle cx="230" cy="340" r="40" fill="#238823" />
+</svg>
