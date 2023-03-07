@@ -8,6 +8,18 @@ body {
 	margin-top: 60px;
 }
 
+header {
+	display: grid;
+	justify-content: center;
+	gap: 20px;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
 img {
 	max-width: 100%;
 	display: block;
@@ -37,6 +49,7 @@ p {
 }
 
 .menu a {
+	display: block;
 	background: #ffffff;
 	padding: 15px 30px;
 	border-radius: 4px;

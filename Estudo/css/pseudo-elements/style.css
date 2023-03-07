@@ -1,0 +1,33 @@
+ul li {
+	list-style: none;
+	font-size: 1.5rem;
+	display: flex;
+	align-items: center;
+}
+
+li::before {
+	content: '';
+	width: 8px;
+	height: 8px;
+	background: linear-gradient(coral, lightblue);
+	border: 2px solid black;
+	border-radius: 10px;
+	margin-right: 10px;
+}
+
+h1 {
+	position: relative;
+	transition: 2s;
+}
+
+h1:hover::after {
+	content: '';
+	background-color: purple;
+	display: inline-block;
+	width: 3rem;
+	height: 0.14rem;
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	transform: 2s;
+}
