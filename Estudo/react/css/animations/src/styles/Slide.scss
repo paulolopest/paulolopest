@@ -1,0 +1,26 @@
+.slide-container {
+	overflow: hidden;
+	transition: 0.3s ease;
+}
+
+.slide-content {
+	display: flex;
+	transition: transform 0.3s ease;
+}
+
+.slide-item {
+	flex-shrink: 0;
+	width: 80%;
+	margin: 0 10%;
+	background-color: #eee;
+	padding: 10rem 0;
+	border-radius: 4px;
+	text-align: center;
+}
+
+.slide-nav {
+	display: flex;
+	justify-content: space-between;
+	margin: 1rem auto;
+	width: 80%;
+}
