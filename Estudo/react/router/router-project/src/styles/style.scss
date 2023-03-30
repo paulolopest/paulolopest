@@ -1,0 +1,37 @@
+@import '../pages/Home/Home.scss';
+@import '../pages/Product/Product.scss';
+@import '../pages/contact/Contact.scss';
+@import '../components/footer/Footer.scss';
+@import '../components/header/Header.scss';
+
+body {
+	font-family: 'Fira code', 'Arial';
+	margin: 2rem;
+}
+
+img {
+	max-width: 100%;
+	border-radius: 0.5rem;
+}
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
+h1 {
+	font-size: 1.4rem;
+}
+
+.animeLeft {
+	transform: translateX(-50px);
+	opacity: 0;
+	animation: animeLeft 0.5s forwards;
+}
+
+@keyframes animeLeft {
+	to {
+		transform: initial;
+		opacity: initial;
+	}
+}
